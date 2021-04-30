@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[[ -z "$1" ]] && echo "USAGE: $0 NOTES_DIRECTORY" && exit 0
+[[ -z "$1" ]] && echo "USAGE: $0 NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]" && exit 0
 
 function _render {
 	echo "rendering $1"

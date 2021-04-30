@@ -4,5 +4,5 @@ install:
 	cp -r templates /opt/notes2web
 	cp styles.css /opt/notes2web
 
-clean:
+uninstall:
 	rm -rf /usr/local/bin/notes2web/opt/notes2web
