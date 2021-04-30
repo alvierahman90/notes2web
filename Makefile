@@ -1,8 +1,8 @@
 install:
-	cp gen_notes.sh /usr/local/bin
-	mkdir -p /opt/gen_notes
-	cp -r templates /opt/gen_notes
-	cp styles.css /opt/gen_notes
+	cp notes2web/usr/local/bin
+	mkdir -p /opt/notes2web
+	cp -r templates /opt/notes2web
+	cp styles.css /opt/notes2web
 
 clean:
-	rm -rf /usr/local/bin/gen_notes.sh /opt/gen_notes
+	rm -rf /usr/local/bin/notes2web/opt/notes2web
