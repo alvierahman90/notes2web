@@ -8,7 +8,7 @@ function _render {
 		--toc\
 		--standalone\
 		-t html\
-		--template /opt/gen_notes/templates/article.html\
+		--template /opt/notes2web/templates/article.html\
 		-o "$(dirname "$1")/index.html"\
 		"$1"\
 		--mathjax
@@ -18,7 +18,7 @@ function _renderindex {
 	echo "rendering $1"
 	pandoc\
 		-t html\
-		--template /opt/gen_notes/templates/index.html\
+		--template /opt/notes2web/templates/index.html\
 		-o index.html\
 		"$1"
 }
@@ -28,7 +28,7 @@ function _addtolist {
 	pandoc\
 		-t html\
 		-V "filepath=$(dirname "$1")"\
-		--template /opt/gen_notes/templates/listitem.html\
+		--template /opt/notes2web/templates/listitem.html\
 		"$1"\
 		>> index.md
 }
@@ -57,4 +57,4 @@ done
 _renderindex index.md
 
 echo "copying styles.css to current directory"
-cp /opt/gen_notes/styles.css .
+cp /opt/notes2web/styles.css .
