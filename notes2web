@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[[ -z "$1" ]] && echo "USAGE: $0 NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]" && exit 0
+[[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
 
 function _render {
 	echo "rendering $1"
@@ -23,7 +23,13 @@ function _renderindex {
 		"$1"
 }
 
-function _addtolist {
+function _adddirtoindex {
+	dir="$(dirname "$1")"
+	echo "<h1>$(basename "$dir") notes</h1>" >> index.md
+	find "$dir" -name '*.md' -exec bash -c "_addarticletoindex '{}'" \;
+}
+
+function _addarticletoindex {
 	echo "adding $1 to list of notes"
 	pandoc\
 		-t html\
@@ -34,13 +40,13 @@ function _addtolist {
 }
 
 export -f _render
-export -f _addtolist
+export -f _adddirtoindex
+export -f _addarticletoindex
 
 #render each markdown file
-
-for var in "$@"
+for file in "$@"
 do
-	find "$var" -name '*.md' -exec bash -c "_render '{}'" \;
+	find "$file" -name '*.md' -exec bash -c "_render '{}'" \;
 done
 
 # create an intermediate markdown file of links to each article
@@ -48,11 +54,12 @@ echo "---
 title: alv's notes
 ---" > index.md
 
-for var in "$@"
+for file in "$@"
 do
-	echo "<h1>$var notes</h1>" >> index.md
-	find "$var" -name '*.md' -exec bash -c "_addtolist '{}'" \;
+	[[ ! -f "$file" ]] && echo "the presence of this files tells notes2web that it should be added to the notes2web index" > "$file/.2web"
 done
+
+find -name '.2web' -exec bash -c "_adddirtoindex '{}'" \;
 
 _renderindex index.md
 
