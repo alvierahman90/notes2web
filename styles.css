@@ -48,3 +48,8 @@ img {
 	display: block;
 	max-width: 100%;
 }
+
+figcaption {
+	margin: 0 auto;
+	width: max-content;
+}
