@@ -21,7 +21,7 @@ function _renderarticle {
 
 function _adddirtoindex {
 	dir="$(dirname "$1")"
-	echo "<h1>$(basename "$dir") notes</h1>" >> index.md
+	echo "<h2>$(basename "$dir") notes</h2>" >> index.md
 	find "$dir" -name '*.md' -exec bash -c "_addarticletoindex '{}'" \;
 }
 
