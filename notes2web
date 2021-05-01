@@ -5,6 +5,7 @@
 
 # set default config values, load user config, export config variables
 name=""
+output="web"
 article_template="/opt/notes2web/templates/article.html"
 textarticlehead_template="/opt/notes2web/templates/textarticlehead.html"
 textarticlefoot_template="/opt/notes2web/templates/textarticlefoot.html"
@@ -18,6 +19,7 @@ do
 done
 
 export name
+export output
 export article_template
 export textarticlehead_template
 export textarticlefoot_template
@@ -28,12 +30,13 @@ export stylesheet
 
 function _renderarticle {
 	echo "rendering $1"
+	mkdir -p "$(dirname "$output/${1}.html")"
 	pandoc\
 		--toc\
 		--standalone\
 		-t html\
 		--template "$article_template"\
-		-o "${1}.html"\
+		-o "$output/${1}.html"\
 		"$1"\
 		--mathjax
 }
@@ -42,16 +45,17 @@ function _renderarticle {
 function _rendertextarticle {
 	[[ "$(file -b "$1")" == "ASCII text" ]] || exit
 	echo "rendering text file $1"
+	mkdir -p "$(dirname "$output/${1}.html")"
 	sed -e "s#\\\$title\\\$#$1#" "$textarticlehead_template"\
-		> "${1}.html"
-	cat "$1" >> "${1}.html"
-	cat "$textarticlefoot_template" >> "${1}.html"
+		> "$output/${1}.html"
+	cat "$1" >> "$output/${1}.html"
+	cat "$textarticlefoot_template" >> "$output/${1}.html"
 }
 
 
 function _adddirtoindex {
 	dir="$(dirname "$1")"
-	echo "<h2>$(basename "$dir") notes</h2>" >> index.md
+	echo "<h2>$(basename "$dir") notes</h2>" >> $output/index.md
 	find "$dir" -name '*.md' -exec bash -c "_addarticletoindex '{}'" \;
 	find "$dir" -not -path '**/.git/**' -not -name '*.md' -type f -exec bash -c "_addtextarticletoindex '{}'" \;
 }
@@ -65,7 +69,7 @@ function _addtextarticletoindex {
 		-V "title=$1"\
 		--template "$listitem_template"\
 		"$1"\
-		>> index.md
+		>> $output/index.md
 }
 
 
@@ -76,7 +80,7 @@ function _addarticletoindex {
 		-V "filepath=${1}.html"\
 		--template "$listitem_template"\
 		"$1"\
-		>> index.md
+		>> $output/index.md
 }
 
 
@@ -96,9 +100,9 @@ done
 
 
 # create an intermediate markdown file of links to each article
-echo "---" > index.md
-[[ -z "$name" ]] && echo "title: notes" >> index.md || echo "title: ${name}'s notes" >> index.md
-echo "---" >> index.md
+echo "---" > $output/index.md
+[[ -z "$name" ]] && echo "title: notes" >> $output/index.md || echo "title: ${name}'s notes" >> $output/index.md
+echo "---" >> $output/index.md
 
 
 # mark folders to be included in notes2web's index
@@ -113,12 +117,12 @@ find -name '.2web' -exec bash -c "_adddirtoindex '{}'" \;
 
 
 echo "copying styles.css to current directory"
-cp "$stylesheet" ./styles.css
+cp "$stylesheet" "$output/styles.css"
 
 
 echo "rendering index.md"
 pandoc\
 	-t html\
 	--template "$index_template"\
-	-o index.html\
-	"index.md"
+	-o "$output/index.html"\
+	"$output/index.md"

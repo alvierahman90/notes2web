@@ -34,7 +34,8 @@ directory.
 Default config values:
 
 ```bash
-name=""
+name="" # your name
+output="web" # the folder where the website will be generated in
 article_template="/opt/notes2web/templates/article.html"
 textarticlehead_template="/opt/notes2web/templates/textarticlehead.html"
 textarticlefoot_template="/opt/notes2web/templates/textarticlefoot.html"
