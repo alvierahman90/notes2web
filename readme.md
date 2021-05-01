@@ -19,6 +19,18 @@ root directory.
 
 Then you just have to point a webserver at your notes directory.
 
+## Config
+
+`notes2web` looks for a config file called `.notes2web.conf` in your current directory and your home
+directory.
+Right now the only config available is `name`:
+
+```bash
+name="alv"
+```
+
+If the name is not set, the title is set to 'notes'.
+
 ## Uninstall
 
 ```

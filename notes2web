@@ -2,6 +2,11 @@
 
 [[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
 
+for configpath in "$HOME/.notes2web.conf" "$HOME/.config/notes2web/config" ".notes2web.conf"
+do
+	[[ -f "$configpath" ]] && source "$configpath"
+done
+
 function _renderarticle {
 	echo "rendering $1"
 	pandoc\
@@ -41,9 +46,9 @@ do
 done
 
 # create an intermediate markdown file of links to each article
-echo "---
-title: alv's notes
----" > index.md
+echo "---" > index.md
+[[ -z "$name" ]] && echo "title: notes" >> index.md || echo "title: ${name}'s notes" >> index.md
+echo "---" >> index.md
 
 for file in "$@"
 do
