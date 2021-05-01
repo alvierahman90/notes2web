@@ -21,11 +21,10 @@ View your notes as a static html site.
 $ notes2web NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
 ```
 
-The command will generate and place html files in your notes directory.
-It will then generate a list of all note files and put it in `index.html` in the
-root directory.
+The command will generate a website in the `$output` directory (`./web` by default).
+It will then generate a list of all note files and put it in `index.html`.
 
-Then you just have to point a webserver at your notes directory.
+Then you just have to point a webserver at `$output`.
 
 ## Config
 
