@@ -6,6 +6,8 @@
 # set default config values, load user config, export config variables
 name=""
 article_template="/opt/notes2web/templates/article.html"
+textarticlehead_template="/opt/notes2web/templates/textarticlehead.html"
+textarticlefoot_template="/opt/notes2web/templates/textarticlefoot.html"
 listitem_template="/opt/notes2web/templates/listitem.html"
 index_template="/opt/notes2web/templates/index.html"
 stylesheet="/opt/notes2web/styles.css"
@@ -17,6 +19,8 @@ done
 
 export name
 export article_template
+export textarticlehead_template
+export textarticlefoot_template
 export listitem_template
 export index_template
 export stylesheet
@@ -29,9 +33,19 @@ function _renderarticle {
 		--standalone\
 		-t html\
 		--template "$article_template"\
-		-o "$(dirname "$1")/index.html"\
+		-o "${1}.html"\
 		"$1"\
 		--mathjax
+}
+
+
+function _rendertextarticle {
+	[[ "$(file -b "$1")" == "ASCII text" ]] || exit
+	echo "rendering text file $1"
+	sed -e "s#\\\$title\\\$#$1#" "$textarticlehead_template"\
+		> "${1}.html"
+	cat "$1" >> "${1}.html"
+	cat "$textarticlefoot_template" >> "${1}.html"
 }
 
 
@@ -39,6 +53,19 @@ function _adddirtoindex {
 	dir="$(dirname "$1")"
 	echo "<h2>$(basename "$dir") notes</h2>" >> index.md
 	find "$dir" -name '*.md' -exec bash -c "_addarticletoindex '{}'" \;
+	find "$dir" -not -path '**/.git/**' -not -name '*.md' -type f -exec bash -c "_addtextarticletoindex '{}'" \;
+}
+
+
+function _addtextarticletoindex {
+	[[ "$(file -b "$1")" == "ASCII text" ]] || exit
+	pandoc\
+		-t html\
+		-V "filepath=${1}.html"\
+		-V "title=$1"\
+		--template "$listitem_template"\
+		"$1"\
+		>> index.md
 }
 
 
@@ -46,7 +73,7 @@ function _addarticletoindex {
 	echo "adding $1 to list of notes"
 	pandoc\
 		-t html\
-		-V "filepath=$(dirname "$1")"\
+		-V "filepath=${1}.html"\
 		--template "$listitem_template"\
 		"$1"\
 		>> index.md
@@ -54,14 +81,17 @@ function _addarticletoindex {
 
 
 export -f _renderarticle
+export -f _rendertextarticle
 export -f _adddirtoindex
 export -f _addarticletoindex
+export -f _addtextarticletoindex
 
 
 #render each markdown file in every folder passed in args
-for file in "$@"
+for dir in "$@"
 do
-	find "$file" -name '*.md' -exec bash -c "_renderarticle '{}'" \;
+	find "$dir" -name '*.md' -exec bash -c "_renderarticle '{}'" \;
+	find "$dir" -not -path '**/.git/**' -not -name '*.md' -type f -exec bash -c "_rendertextarticle '{}'" \;
 done
 
 

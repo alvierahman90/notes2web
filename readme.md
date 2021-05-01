@@ -36,6 +36,8 @@ Default config values:
 ```bash
 name=""
 article_template="/opt/notes2web/templates/article.html"
+textarticlehead_template="/opt/notes2web/templates/textarticlehead.html"
+textarticlefoot_template="/opt/notes2web/templates/textarticlefoot.html"
 listitem_template="/opt/notes2web/templates/listitem.html"
 index_template="/opt/notes2web/templates/index.html"
 stylesheet="/opt/notes2web/styles.css"
