@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-[[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
-
 
 # set default config values, load user config, export config variables
 name=""
@@ -26,6 +24,17 @@ export textarticlefoot_template
 export listitem_template
 export index_template
 export stylesheet
+
+
+[[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
+[[ "$1" == "--clean" ]] && {
+	find -name ".2web" -exec rm {} \;
+	rm -rf "$output"
+	exit 0
+}
+
+
+mkdir -p "$output"
 
 
 function _renderarticle {
