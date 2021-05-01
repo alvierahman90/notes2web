@@ -2,7 +2,7 @@
 
 [[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
 
-function _render {
+function _renderarticle {
 	echo "rendering $1"
 	pandoc\
 		--toc\
@@ -12,15 +12,6 @@ function _render {
 		-o "$(dirname "$1")/index.html"\
 		"$1"\
 		--mathjax
-}
-
-function _renderindex {
-	echo "rendering $1"
-	pandoc\
-		-t html\
-		--template /opt/notes2web/templates/index.html\
-		-o index.html\
-		"$1"
 }
 
 function _adddirtoindex {
@@ -39,14 +30,14 @@ function _addarticletoindex {
 		>> index.md
 }
 
-export -f _render
+export -f _renderarticle
 export -f _adddirtoindex
 export -f _addarticletoindex
 
 #render each markdown file
 for file in "$@"
 do
-	find "$file" -name '*.md' -exec bash -c "_render '{}'" \;
+	find "$file" -name '*.md' -exec bash -c "_renderarticle '{}'" \;
 done
 
 # create an intermediate markdown file of links to each article
@@ -59,9 +50,15 @@ do
 	[[ ! -f "$file" ]] && echo "the presence of this files tells notes2web that it should be added to the notes2web index" > "$file/.2web"
 done
 
+# add articles to index
 find -name '.2web' -exec bash -c "_adddirtoindex '{}'" \;
 
-_renderindex index.md
+echo "rendering index.md"
+pandoc\
+	-t html\
+	--template /opt/notes2web/templates/index.html\
+	-o index.html\
+	"index.md"
 
 echo "copying styles.css to current directory"
 cp /opt/notes2web/styles.css .
