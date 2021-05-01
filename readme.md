@@ -2,15 +2,23 @@
 
 View your notes as a static html site.
 
+![](./screenshot.png)
+
 ## Install
 
-0. Install [Pandoc](https://pandoc.org/index.html)
+0. Install [Pandoc](https://pandoc.org/index.html) and [yq](https://github.com/mikefarah/yq)
+
+   On arch:
+   ```
+   # pacman -S pandoc yq
+   ```
+
 1. Run `make install` as root
 
 ## Usage
 
 ```
-notes2web NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
+$ notes2web NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
 ```
 
 The command will generate and place html files in your notes directory.
