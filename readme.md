@@ -31,10 +31,14 @@ Then you just have to point a webserver at your notes directory.
 
 `notes2web` looks for a config file called `.notes2web.conf` in your current directory and your home
 directory.
-Right now the only config available is `name`:
+Default config values:
 
 ```bash
-name="alv"
+name=""
+article_template="/opt/notes2web/templates/article.html"
+listitem_template="/opt/notes2web/templates/listitem.html"
+index_template="/opt/notes2web/templates/index.html"
+stylesheet="/opt/notes2web/styles.css"
 ```
 
 If the name is not set, the title is set to 'notes'.

@@ -3,10 +3,23 @@
 [[ "$1" == "--help" ]] && echo "USAGE: $0 [NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]]" && exit 0
 
 
+# set default config values, load user config, export config variables
+name=""
+article_template="/opt/notes2web/templates/article.html"
+listitem_template="/opt/notes2web/templates/listitem.html"
+index_template="/opt/notes2web/templates/index.html"
+stylesheet="/opt/notes2web/styles.css"
+
 for configpath in "$HOME/.notes2web.conf" "$HOME/.config/notes2web/config" ".notes2web.conf"
 do
 	[[ -f "$configpath" ]] && source "$configpath"
 done
+
+export name
+export article_template
+export listitem_template
+export index_template
+export stylesheet
 
 
 function _renderarticle {
@@ -15,7 +28,7 @@ function _renderarticle {
 		--toc\
 		--standalone\
 		-t html\
-		--template /opt/notes2web/templates/article.html\
+		--template "$article_template"\
 		-o "$(dirname "$1")/index.html"\
 		"$1"\
 		--mathjax
@@ -34,7 +47,7 @@ function _addarticletoindex {
 	pandoc\
 		-t html\
 		-V "filepath=$(dirname "$1")"\
-		--template /opt/notes2web/templates/listitem.html\
+		--template "$listitem_template"\
 		"$1"\
 		>> index.md
 }
@@ -70,12 +83,12 @@ find -name '.2web' -exec bash -c "_adddirtoindex '{}'" \;
 
 
 echo "copying styles.css to current directory"
-cp /opt/notes2web/styles.css .
+cp "$stylesheet" ./styles.css
 
 
 echo "rendering index.md"
 pandoc\
 	-t html\
-	--template /opt/notes2web/templates/index.html\
+	--template "$index_template"\
 	-o index.html\
 	"index.md"
