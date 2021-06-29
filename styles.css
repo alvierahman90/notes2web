@@ -59,3 +59,15 @@ figcaption {
 .article {
 	margin: 1em;
 }
+
+blockquote {
+	border-left: 0.4em solid #454545;
+	margin-left: 0;
+	padding-left: 1em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+blockquote * {
+	margin: 0;
+}
