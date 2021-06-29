@@ -4,6 +4,19 @@ View your notes as a static html site.
 
 ![](./screenshot.png)
 
+
+## Why?
+
+I want to be able to view my notes in a more convenient way.
+I was already writing them in Pandoc markdown and could view them as PDFs but that wasn't quite
+doing it for me:
+
+- It was inconvenient to flick through multiple files of notes to find the right PDF
+- It was annoying to sync to my phone
+- PDFs do not scale so they were hard to read on smaller screens
+- Probably more reasons I can't think of right now
+
+
 ## Install
 
 0. Install [Pandoc](https://pandoc.org/index.html) and [yq](https://github.com/mikefarah/yq)
