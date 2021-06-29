@@ -18,7 +18,7 @@ View your notes as a static html site.
 ## Usage
 
 ```
-$ notes2web NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
+$ notes2web.py NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
 ```
 
 The command will generate a website in the `$output` directory (`./web` by default).
@@ -27,6 +27,8 @@ It will then generate a list of all note files and put it in `index.html`.
 Then you just have to point a webserver at `$output`.
 
 ## Config
+
+NOT CURRENTLY IMPLEMENTED
 
 `notes2web` looks for a config file called `.notes2web.conf` in your current directory and your home
 directory.

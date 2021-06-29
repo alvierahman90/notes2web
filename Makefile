@@ -1,8 +1,9 @@
 install:
-	cp notes2web /usr/local/bin
+	cp notes2web.py /usr/local/bin
+	pip install -r requirement.txt
 	mkdir -p /opt/notes2web
 	cp -r templates /opt/notes2web
 	cp styles.css /opt/notes2web
 
 uninstall:
-	rm -rf /usr/local/bin/notes2web/opt/notes2web
+	rm -rf /usr/local/bin/notes2web.py /opt/notes2web
