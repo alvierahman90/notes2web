@@ -8,6 +8,7 @@ body {
 	line-height: 1.4;
 	text-align: justify;
 	background-color: #fefefe;
+	overflow-wrap: break-word;
 }
 
 a { color: #07a; }
@@ -21,6 +22,7 @@ img[class="centered"] {
 table {
 	border-collapse: collapse;
 	margin: 1em auto;
+	max-width: 100%;
 }
 th, td {
 	padding: 1em;
@@ -52,4 +54,8 @@ img {
 figcaption {
 	margin: 0 auto;
 	width: max-content;
+}
+
+.article {
+	margin: 1em;
 }
