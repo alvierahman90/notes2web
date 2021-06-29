@@ -19,11 +19,11 @@ doing it for me:
 
 ## Install
 
-0. Install [Pandoc](https://pandoc.org/index.html) and [yq](https://github.com/mikefarah/yq)
+0. Install [Pandoc](https://pandoc.org/index.html)
 
    On arch:
    ```
-   # pacman -S pandoc yq
+   # pacman -S pandoc
    ```
 
 1. Run `make install` as root
