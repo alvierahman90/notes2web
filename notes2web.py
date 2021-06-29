@@ -89,6 +89,7 @@ def main(args):
 
     print(f"{markdown_files=}")
     for filename in markdown_files:
+        print(f"{filename=}")
         html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
         output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
