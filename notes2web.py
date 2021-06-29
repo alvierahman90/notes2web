@@ -14,6 +14,7 @@ TEXT_ARTICLE_TEMPLATE_FOOT = None
 TEXT_ARTICLE_TEMPLATE_HEAD = None
 INDEX_TEMPLATE_FOOT = None
 INDEX_TEMPLATE_HEAD = None
+EXTRA_INDEX_CONTENT = None
 
 def get_files(folder):
     markdown = []
@@ -55,6 +56,7 @@ def get_args():
     parser.add_argument('-i', '--template-index-head', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexhead.html'))
     parser.add_argument('-I', '--template-index-foot', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexfoot.html'))
     parser.add_argument('-s', '--stylesheet', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/styles.css'))
+    parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
     return parser.parse_args()
 
 
@@ -72,6 +74,9 @@ def main(args):
 
     with open(args.template_index_head) as fp:
         INDEX_TEMPLATE_HEAD = fp.read()
+
+    with open(args.extra_index_content) as fp:
+        EXTRA_INDEX_CONTENT = fp.read()
 
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir, exist_ok=True)
@@ -114,6 +119,8 @@ def main(args):
 
     dirs_to_index = [args.output_dir.name] + get_dirs(args.output_dir)
     print(f"{dirs_to_index=}")
+    print(f"{os.path.commonpath(dirs_to_index)=}")
+
     for directory in dirs_to_index:
         paths = os.listdir(directory)
         print(f"{paths=}")
@@ -125,7 +132,6 @@ def main(args):
                 continue
 
             fullpath = os.path.join(directory, path)
-            print(fullpath)
             if os.path.splitext(path)[1] == '.html':
                 with open(fullpath) as fp:
                     soup = bs(fp.read(), 'html.parser')
@@ -150,6 +156,11 @@ def main(args):
         indexentries.sort(key=lambda entry: entry['isdirectory'], reverse=True)
         
         html = re.sub(r'\$title\$', directory, INDEX_TEMPLATE_HEAD)
+        html = re.sub(r'\$extra_content\$',
+                EXTRA_INDEX_CONTENT if directory == os.path.commonpath(dirs_to_index) else '',
+                html
+                )
+
         for entry in indexentries:
             html += f"<div class=\"article\"><a href=\"{entry['path']}\">{entry['title']}{'/' if entry['isdirectory'] else ''}</a></div>"
         html += INDEX_TEMPLATE_FOOT
