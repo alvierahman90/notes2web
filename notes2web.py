@@ -57,6 +57,7 @@ def get_args():
     parser.add_argument('-I', '--template-index-foot', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexfoot.html'))
     parser.add_argument('-s', '--stylesheet', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/styles.css'))
     parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
+    parser.add_argument('-n', '--index-article-names', action='append', default=['index.md'])
     return parser.parse_args()
 
 
@@ -87,11 +88,24 @@ def main(args):
 
     markdown_files, plaintext_files, other_files = get_files(args.notes)
 
+    print(f"{args.index_article_names=}")
+
+    dirs_with_index_article = []
+
     print(f"{markdown_files=}")
     for filename in markdown_files:
         print(f"{filename=}")
+        print(f"{os.path.basename(filename)=}")
         html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
-        output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
+        if os.path.basename(filename) in args.index_article_names:
+            output_filename = os.path.join(
+                    os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)),
+                    'index.html'
+                    )
+            dirs_with_index_article.append(os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)))
+        else:
+            output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
+        print(f"{output_filename=}")
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 
         with open(output_filename, 'w+') as fp:
@@ -123,12 +137,15 @@ def main(args):
     print(f"{os.path.commonpath(dirs_to_index)=}")
 
     for directory in dirs_to_index:
+        if directory in dirs_with_index_article:
+            continue
         paths = os.listdir(directory)
         print(f"{paths=}")
 
         indexentries = []
         
         for path in paths:
+            print(f"{path=}")
             if path == 'index.html':
                 continue
 
