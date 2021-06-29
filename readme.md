@@ -18,34 +18,37 @@ View your notes as a static html site.
 ## Usage
 
 ```
-$ notes2web.py NOTES_DIRECTORY_1 [NOTES_DIRECTORY_2 [...]]
+$ notes2web.py NOTES_DIRECTORY_1
 ```
 
-The command will generate a website in the `$output` directory (`./web` by default).
+Output of `notes2web.py --help`:
+
+```
+usage: notes2web.py [-h] [-o OUTPUT_DIR] [-t TEMPLATE] [-H TEMPLATE_TEXT_HEAD]
+                    [-f TEMPLATE_TEXT_FOOT] [-i TEMPLATE_INDEX_HEAD]
+                    [-I TEMPLATE_INDEX_FOOT] [-s STYLESHEET]
+                    [-e EXTRA_INDEX_CONTENT]
+                    notes
+
+positional arguments:
+  notes
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT_DIR, --output-dir OUTPUT_DIR
+  -t TEMPLATE, --template TEMPLATE
+  -H TEMPLATE_TEXT_HEAD, --template-text-head TEMPLATE_TEXT_HEAD
+  -f TEMPLATE_TEXT_FOOT, --template-text-foot TEMPLATE_TEXT_FOOT
+  -i TEMPLATE_INDEX_HEAD, --template-index-head TEMPLATE_INDEX_HEAD
+  -I TEMPLATE_INDEX_FOOT, --template-index-foot TEMPLATE_INDEX_FOOT
+  -s STYLESHEET, --stylesheet STYLESHEET
+  -e EXTRA_INDEX_CONTENT, --extra-index-content EXTRA_INDEX_CONTENT
+```
+
+The command will generate a website in the `output-dir` directory (`./web` by default).
 It will then generate a list of all note files and put it in `index.html`.
 
-Then you just have to point a webserver at `$output`.
-
-## Config
-
-NOT CURRENTLY IMPLEMENTED
-
-`notes2web` looks for a config file called `.notes2web.conf` in your current directory and your home
-directory.
-Default config values:
-
-```bash
-name="" # your name
-output="web" # the folder where the website will be generated in
-article_template="/opt/notes2web/templates/article.html"
-textarticlehead_template="/opt/notes2web/templates/textarticlehead.html"
-textarticlefoot_template="/opt/notes2web/templates/textarticlefoot.html"
-listitem_template="/opt/notes2web/templates/listitem.html"
-index_template="/opt/notes2web/templates/index.html"
-stylesheet="/opt/notes2web/styles.css"
-```
-
-If the name is not set, the title is set to 'notes'.
+Then you just have to point a webserver at `output-dir`.
 
 ## Uninstall
 
