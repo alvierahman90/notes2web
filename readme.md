@@ -19,11 +19,11 @@ doing it for me:
 
 ## Install
 
-0. Install [Pandoc](https://pandoc.org/index.html)
+0. Install [Pandoc](https://pandoc.org/index.html) and [Pip](https://github.com/pypa/pip)
 
    On arch:
    ```
-   # pacman -S pandoc
+   # pacman -S pandoc python-pip
    ```
 
 1. Run `make install` as root
@@ -31,7 +31,7 @@ doing it for me:
 ## Usage
 
 ```
-$ notes2web.py NOTES_DIRECTORY_1
+$ notes2web.py notes_directory
 ```
 
 Output of `notes2web.py --help`:
@@ -40,7 +40,7 @@ Output of `notes2web.py --help`:
 usage: notes2web.py [-h] [-o OUTPUT_DIR] [-t TEMPLATE] [-H TEMPLATE_TEXT_HEAD]
                     [-f TEMPLATE_TEXT_FOOT] [-i TEMPLATE_INDEX_HEAD]
                     [-I TEMPLATE_INDEX_FOOT] [-s STYLESHEET]
-                    [-e EXTRA_INDEX_CONTENT]
+                    [-e EXTRA_INDEX_CONTENT] [-n INDEX_ARTICLE_NAMES]
                     notes
 
 positional arguments:
@@ -56,6 +56,7 @@ optional arguments:
   -I TEMPLATE_INDEX_FOOT, --template-index-foot TEMPLATE_INDEX_FOOT
   -s STYLESHEET, --stylesheet STYLESHEET
   -e EXTRA_INDEX_CONTENT, --extra-index-content EXTRA_INDEX_CONTENT
+  -n INDEX_ARTICLE_NAMES, --index-article-names INDEX_ARTICLE_NAMES
 ```
 
 The command will generate a website in the `output-dir` directory (`./web` by default).
