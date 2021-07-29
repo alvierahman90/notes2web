@@ -146,7 +146,7 @@ def main(args):
         
         for path in paths:
             print(f"{path=}")
-            if path == 'index.html':
+            if path in [ 'index.html', '.git' ]:
                 continue
 
             fullpath = os.path.join(directory, path)
