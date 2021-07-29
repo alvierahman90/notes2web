@@ -113,9 +113,9 @@ def main(args):
 
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
+        title = os.path.basename(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))
         output_filename = re.sub(f"^{args.notes.name}", args.output_dir.name, filename) + '.html'
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
-        title = os.path.basename(output_filename)
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
         with open(filename) as fp:
@@ -158,8 +158,11 @@ def main(args):
                     title = soup.find('title').get_text()
                 except AttributeError:
                     title = path
-            else:
+            elif os.path.isdir(fullpath):
                 title = path
+            else:
+                # don't add plaintext files to index, since they have a html wrapper
+                continue
 
             if title.strip() == '':
                 title = path
