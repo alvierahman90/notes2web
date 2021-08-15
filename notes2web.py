@@ -2,6 +2,7 @@
 
 
 from bs4 import BeautifulSoup as bs
+import frontmatter
 import magic
 import sys
 import pathlib
@@ -97,10 +98,11 @@ def main(args):
     dirs_with_index_article = []
 
     print(f"{markdown_files=}")
+    tag_dict = {}
     for filename in markdown_files:
         print(f"{filename=}")
         print(f"{os.path.basename(filename)=}")
-        html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
+
         if os.path.basename(filename) in args.index_article_names:
             output_filename = os.path.join(
                     os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)),
@@ -109,6 +111,20 @@ def main(args):
             dirs_with_index_article.append(os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)))
         else:
             output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
+
+        fm = frontmatter.load(filename)
+        if isinstance(fm.get('tags'), list):
+            for tag in fm.get('tags'):
+                if tag in tag_dict.keys():
+                    tag_dict[tag].append({
+                        'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+                        'title': fm.get('title')
+                        })
+                else:
+                    tag_dict[tag] = [ {
+                        'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+                        'title': fm.get('title')
+                        } ]
         print(f"{output_filename=}")
 
         if update_required(filename, output_filename) or args.force:
@@ -124,6 +140,7 @@ def main(args):
         output_filename = re.sub(f"^{args.notes.name}", args.output_dir.name, filename) + '.html'
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
+        html = re.sub(r'\$h1title\$', title, html)
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
         with open(filename) as fp:
             html += fp.read()
@@ -137,6 +154,22 @@ def main(args):
         output_filename = re.sub(f"^{args.notes.name}", args.output_dir.name, filename)
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
         shutil.copyfile(filename, output_filename)
+
+    tagdir = os.path.join(args.output_dir, '.tags')
+    os.makedirs(tagdir, exist_ok=True)
+
+    for tag in tag_dict.keys():
+        html = re.sub(r'\$title\$', f'{tag}', INDEX_TEMPLATE_HEAD)
+        html = re.sub(r'\$h1title\$', f'tag: {tag}', html)
+        html = re.sub(r'\$extra_content\$', '', html)
+
+        for entry in tag_dict[tag]:
+            html += f"<div class=\"article\"><a href=\"/{entry['path']}\">{entry['title']}</a></div>"
+        html += INDEX_TEMPLATE_FOOT
+
+        with open(os.path.join(tagdir, f'{tag}.html'), 'w+') as fp:
+            fp.write(html)
+
 
 
     dirs_to_index = [args.output_dir.name] + get_dirs(args.output_dir)
@@ -184,6 +217,7 @@ def main(args):
         indexentries.sort(key=lambda entry: entry['isdirectory'], reverse=True)
         
         html = re.sub(r'\$title\$', directory, INDEX_TEMPLATE_HEAD)
+        html = re.sub(r'\$h1title\$', directory, html)
         html = re.sub(r'\$extra_content\$',
                 EXTRA_INDEX_CONTENT if directory == os.path.commonpath(dirs_to_index) else '',
                 html
@@ -197,6 +231,7 @@ def main(args):
             fp.write(html)
 
     shutil.copyfile(args.stylesheet, os.path.join(args.output_dir.name, 'styles.css'))
+    print(tag_dict)
 
     return 0
 
