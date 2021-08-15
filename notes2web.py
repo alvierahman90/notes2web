@@ -42,6 +42,9 @@ def get_dirs(folder):
 
     return r
 
+def update_required(src_filename, output_filename):
+    return not os.path.exists(output_filename) or os.path.getmtime(src_filename) > os.path.getmtime(output_filename)
+
 
 def get_args():
     """ Get command line arguments """
@@ -58,6 +61,7 @@ def get_args():
     parser.add_argument('-s', '--stylesheet', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/styles.css'))
     parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
     parser.add_argument('-n', '--index-article-names', action='append', default=['index.md'])
+    parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
     return parser.parse_args()
 
 
@@ -106,10 +110,13 @@ def main(args):
         else:
             output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
         print(f"{output_filename=}")
-        os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 
-        with open(output_filename, 'w+') as fp:
-            fp.write(html)
+        if update_required(filename, output_filename) or args.force:
+            html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
+            os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+
+            with open(output_filename, 'w+') as fp:
+                fp.write(html)
 
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
