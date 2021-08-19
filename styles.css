@@ -83,3 +83,11 @@ blockquote * {
 #results {
 	overflow-x: scroll;
 }
+
+.smallText {
+	font-size: 0.7em;
+}
+
+.article .smallText {
+	margin: 0
+}
