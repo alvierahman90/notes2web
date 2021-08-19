@@ -11,11 +11,13 @@ import shutil
 import os
 import re
 
+
 TEXT_ARTICLE_TEMPLATE_FOOT = None
 TEXT_ARTICLE_TEMPLATE_HEAD = None
 INDEX_TEMPLATE_FOOT = None
 INDEX_TEMPLATE_HEAD = None
 EXTRA_INDEX_CONTENT = None
+
 
 def get_files(folder):
     markdown = []
@@ -35,6 +37,7 @@ def get_files(folder):
 
     return markdown, plaintext, other
 
+
 def get_dirs(folder):
     r = []
 
@@ -42,6 +45,7 @@ def get_dirs(folder):
         [r.append(os.path.join(root, folder)) for folder in folders]
 
     return r
+
 
 def update_required(src_filename, output_filename):
     return not os.path.exists(output_filename) or os.path.getmtime(src_filename) > os.path.getmtime(output_filename)
@@ -60,6 +64,7 @@ def get_args():
     parser.add_argument('-i', '--template-index-head', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexhead.html'))
     parser.add_argument('-I', '--template-index-foot', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexfoot.html'))
     parser.add_argument('-s', '--stylesheet', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/styles.css'))
+    parser.add_argument('--home_index', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/home_index.html'))
     parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
     parser.add_argument('-n', '--index-article-names', action='append', default=['index.md'])
     parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
@@ -105,12 +110,12 @@ def main(args):
 
         if os.path.basename(filename) in args.index_article_names:
             output_filename = os.path.join(
-                    os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)),
+                    os.path.dirname(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes', filename))),
                     'index.html'
                     )
-            dirs_with_index_article.append(os.path.dirname(re.sub(f"^{args.notes.name}", args.output_dir.name, filename)))
+            dirs_with_index_article.append(os.path.dirname(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename)))
         else:
-            output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))[0] + '.html'
+            output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename))[0] + '.html'
 
         fm = frontmatter.load(filename)
         if isinstance(fm.get('tags'), list):
@@ -137,7 +142,7 @@ def main(args):
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
         title = os.path.basename(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))
-        output_filename = re.sub(f"^{args.notes.name}", args.output_dir.name, filename) + '.html'
+        output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename) + '.html'
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
         html = re.sub(r'\$h1title\$', title, html)
@@ -151,7 +156,7 @@ def main(args):
 
     print(f"{other_files=}")
     for filename in other_files:
-        output_filename = re.sub(f"^{args.notes.name}", args.output_dir.name, filename)
+        output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename)
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
         shutil.copyfile(filename, output_filename)
 
@@ -231,6 +236,11 @@ def main(args):
             fp.write(html)
 
     shutil.copyfile(args.stylesheet, os.path.join(args.output_dir.name, 'styles.css'))
+    with open(os.path.join(args.output_dir.name, 'index.html'), 'w+') as fp:
+        with open(args.home_index) as fp2:
+            html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
+            html = re.sub(r'\$h1title\$', args.output_dir.parts[0], html)
+        fp.write(html)
     print(tag_dict)
 
     return 0

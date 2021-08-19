@@ -40,7 +40,8 @@ Output of `notes2web.py --help`:
 usage: notes2web.py [-h] [-o OUTPUT_DIR] [-t TEMPLATE] [-H TEMPLATE_TEXT_HEAD]
                     [-f TEMPLATE_TEXT_FOOT] [-i TEMPLATE_INDEX_HEAD]
                     [-I TEMPLATE_INDEX_FOOT] [-s STYLESHEET]
-                    [-e EXTRA_INDEX_CONTENT] [-n INDEX_ARTICLE_NAMES]
+                    [--home_index HOME_INDEX] [-e EXTRA_INDEX_CONTENT]
+                    [-n INDEX_ARTICLE_NAMES] [-F]
                     notes
 
 positional arguments:
@@ -55,8 +56,11 @@ optional arguments:
   -i TEMPLATE_INDEX_HEAD, --template-index-head TEMPLATE_INDEX_HEAD
   -I TEMPLATE_INDEX_FOOT, --template-index-foot TEMPLATE_INDEX_FOOT
   -s STYLESHEET, --stylesheet STYLESHEET
+  --home_index HOME_INDEX
   -e EXTRA_INDEX_CONTENT, --extra-index-content EXTRA_INDEX_CONTENT
   -n INDEX_ARTICLE_NAMES, --index-article-names INDEX_ARTICLE_NAMES
+  -F, --force           Generate new output html even if source file was
+                        modified before output html
 ```
 
 The command will generate a website in the `output-dir` directory (`./web` by default).
