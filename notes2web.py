@@ -10,6 +10,7 @@ import pypandoc
 import shutil
 import os
 import re
+import json
 
 
 TEXT_ARTICLE_TEMPLATE_FOOT = None
@@ -26,6 +27,8 @@ def get_files(folder):
 
     for root, folders, files in os.walk(folder):
         for filename in files:
+            if '/.git' in root:
+                continue
             name = os.path.join(root, filename)
             if os.path.splitext(name)[1] == '.md':
                 markdown.append(name)
@@ -68,6 +71,8 @@ def get_args():
     parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
     parser.add_argument('-n', '--index-article-names', action='append', default=['index.md'])
     parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
+    parser.add_argument('--fuse', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/fuse.js'))
+    parser.add_argument('--searchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/search.js'))
     return parser.parse_args()
 
 
@@ -97,6 +102,7 @@ def main(args):
 
 
     markdown_files, plaintext_files, other_files = get_files(args.notes)
+    all_entries=[]
 
     print(f"{args.index_article_names=}")
 
@@ -131,6 +137,11 @@ def main(args):
                         'title': fm.get('title')
                         } ]
         print(f"{output_filename=}")
+        all_entries.append({
+            'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'title': fm.get('title'),
+            'tags': fm.get('tags')
+        })
 
         if update_required(filename, output_filename) or args.force:
             html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
@@ -153,11 +164,21 @@ def main(args):
 
         with open(output_filename, 'w+') as fp:
             fp.write(html)
+        all_entries.append({
+            'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'title': title,
+            'tags': []
+        })
 
     print(f"{other_files=}")
     for filename in other_files:
         output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename)
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+        all_entries.append({
+            'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'title': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'tags': []
+        })
         shutil.copyfile(filename, output_filename)
 
     tagdir = os.path.join(args.output_dir, '.tags')
@@ -236,10 +257,15 @@ def main(args):
             fp.write(html)
 
     shutil.copyfile(args.stylesheet, os.path.join(args.output_dir.name, 'styles.css'))
+    shutil.copyfile(args.fuse, os.path.join(args.output_dir.name, 'fuse.js'))
+    shutil.copyfile(args.searchjs, os.path.join(args.output_dir.name, 'search.js'))
     with open(os.path.join(args.output_dir.name, 'index.html'), 'w+') as fp:
         with open(args.home_index) as fp2:
             html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
             html = re.sub(r'\$h1title\$', args.output_dir.parts[0], html)
+
+        html = re.sub(r'\$data\$', json.dumps(all_entries), html)
+
         fp.write(html)
     print(tag_dict)
 
