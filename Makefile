@@ -1,6 +1,6 @@
 install:
 	cp notes2web.py /usr/local/bin
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 	mkdir -p /opt/notes2web
 	cp -r templates /opt/notes2web
 	cp styles.css /opt/notes2web
