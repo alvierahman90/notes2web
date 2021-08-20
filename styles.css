@@ -91,3 +91,7 @@ blockquote * {
 .article .smallText {
 	margin: 0
 }
+
+.matchHighlight {
+	background-color: #86c1b9;
+}

@@ -136,11 +136,19 @@ def main(args):
                         'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
                         'title': fm.get('title')
                         } ]
+        with open(filename) as fp:
+            lines = fp.read().split('\n')
+        header_lines = []
+        for line in lines:
+            if re.match('^#{1,6} \S', line):
+                header_lines.append(" ".join(line.split(" ")[1:]))
+
         print(f"{output_filename=}")
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': fm.get('title'),
-            'tags': fm.get('tags')
+            'tags': fm.get('tags'),
+            'headers': header_lines
         })
 
         if update_required(filename, output_filename) or args.force:
@@ -167,7 +175,8 @@ def main(args):
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': title,
-            'tags': []
+            'tags': [],
+            'headers': []
         })
 
     print(f"{other_files=}")
@@ -177,7 +186,8 @@ def main(args):
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-            'tags': []
+            'tags': [],
+            'headers': []
         })
         shutil.copyfile(filename, output_filename)
 
