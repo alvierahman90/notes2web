@@ -65,5 +65,7 @@ function callback() {
 }
 
 searchBar.addEventListener('keyup', callback)
+searchBar.addEventListener('change', callback)
 resultsMax.addEventListener('keyup', callback)
+resultsMax.addEventListener('change', callback)
 callback()
