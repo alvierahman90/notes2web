@@ -73,12 +73,18 @@ blockquote * {
 	margin: 0;
 }
 
-#search {
+#searchWrapper > input {
 	padding: 1em;
-	margin: 1em 0 1em 0;
+	margin: 1em 0.5em 1em 0.5em;
 	font-size: 1em;
-	width: 100%;
+	min-width: 0;
 }
+
+#searchWrapper {
+	display: flex
+}
+
+#search { flex-grow: 9 }
 
 #results {
 	overflow-x: scroll;

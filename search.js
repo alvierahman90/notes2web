@@ -9,11 +9,12 @@ const fuse = new Fuse(data, {
 })
 
 const searchBar = document.getElementById('search')
+const resultsMax = document.getElementById('resultsMax')
 const results = document.getElementById('results')
 
 function callback() {
   results.innerHTML = ''
-  fuse.search(searchBar.value).slice(0,15).forEach(r => {
+  fuse.search(searchBar.value).slice(0, parseInt(resultsMax.value)).forEach(r => {
     wrapper = document.createElement('div')
     wrapper.className = "article"
 
@@ -64,4 +65,5 @@ function callback() {
 }
 
 searchBar.addEventListener('keyup', callback)
+resultsMax.addEventListener('keyup', callback)
 callback()
