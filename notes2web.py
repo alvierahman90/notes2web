@@ -2,6 +2,7 @@
 
 
 from bs4 import BeautifulSoup as bs
+import subprocess
 import frontmatter
 import magic
 import sys
@@ -39,6 +40,29 @@ def get_files(folder):
                 other.append(name)
 
     return markdown, plaintext, other
+
+def git_filehistory(working_dir, filename):
+    print(f"{pathlib.Path(filename).relative_to(working_dir)=}")
+    git_response = subprocess.run(
+            [
+                'git',
+                f"--git-dir={os.path.join(working_dir, '.git')}",
+                "log",
+                "-p",
+                "--",
+                pathlib.Path(filename).relative_to(working_dir)
+            ],
+            stdout=subprocess.PIPE
+    )
+
+    filehistory = f"File history not available: git log returned code {git_response.returncode}."
+    "\nIf this is not a git repository, this is not a problem."
+    if git_response.returncode == 0:
+        filehistory = git_response.stdout.decode('utf-8')
+    if filehistory == "":
+        filehistory = "This file has no history (it may not be part of the git repository)."
+
+    return filehistory
 
 
 def get_dirs(folder):
@@ -151,8 +175,10 @@ def main(args):
             'headers': header_lines
         })
 
+        filehistory = git_filehistory(args.notes, filename)
+
         if update_required(filename, output_filename) or args.force:
-            html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}'])
+            html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}', '-V', f'filehistory={filehistory}'])
             os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 
             with open(output_filename, 'w+') as fp:
@@ -160,6 +186,7 @@ def main(args):
 
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
+        filehistory = git_filehistory(args.notes, filename)
         title = os.path.basename(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))
         output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename) + '.html'
         os.makedirs(os.path.dirname(output_filename), exist_ok=True)
@@ -169,6 +196,7 @@ def main(args):
         with open(filename) as fp:
             html += fp.read()
         html += TEXT_ARTICLE_TEMPLATE_FOOT
+        html = html.replace(r'$filehistory$', filehistory)
 
         with open(output_filename, 'w+') as fp:
             fp.write(html)
