@@ -193,10 +193,10 @@ def main(args):
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
         html = re.sub(r'\$h1title\$', title, html)
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
+        html = html.replace('$filehistory$', filehistory)
         with open(filename) as fp:
             html += fp.read()
         html += TEXT_ARTICLE_TEMPLATE_FOOT
-        html = html.replace(r'$filehistory$', filehistory)
 
         with open(output_filename, 'w+') as fp:
             fp.write(html)

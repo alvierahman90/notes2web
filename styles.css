@@ -95,3 +95,8 @@ blockquote * {
 .matchHighlight {
 	background-color: #86c1b9;
 }
+
+#header > * {
+	margin: 0;
+	padding: 0
+}
