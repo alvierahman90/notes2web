@@ -52,7 +52,8 @@ usage: notes2web.py [-h] [-o OUTPUT_DIR] [-t TEMPLATE] [-H TEMPLATE_TEXT_HEAD]
                     [-f TEMPLATE_TEXT_FOOT] [-i TEMPLATE_INDEX_HEAD]
                     [-I TEMPLATE_INDEX_FOOT] [-s STYLESHEET]
                     [--home_index HOME_INDEX] [-e EXTRA_INDEX_CONTENT]
-                    [-n INDEX_ARTICLE_NAMES] [-F]
+                    [-n INDEX_ARTICLE_NAMES] [-F] [--fuse FUSE]
+                    [--searchjs SEARCHJS]
                     notes
 
 positional arguments:
@@ -72,6 +73,8 @@ optional arguments:
   -n INDEX_ARTICLE_NAMES, --index-article-names INDEX_ARTICLE_NAMES
   -F, --force           Generate new output html even if source file was
                         modified before output html
+  --fuse FUSE
+  --searchjs SEARCHJS
 ```
 
 The command will generate a website in the `output-dir` directory (`./web` by default).
