@@ -55,12 +55,28 @@ def git_filehistory(working_dir, filename):
             stdout=subprocess.PIPE
     )
 
-    filehistory = f"File history not available: git log returned code {git_response.returncode}."
-    "\nIf this is not a git repository, this is not a problem."
+    filehistory = [f"File history not available: git log returned code {git_response.returncode}."
+    "\nIf this is not a git repository, this is not a problem."]
+
     if git_response.returncode == 0:
         filehistory = git_response.stdout.decode('utf-8')
+        temp = re.split(
+                r'(commit [a-f0-9]{40})',
+                filehistory,
+                flags=re.IGNORECASE
+        )
+
+        for t in temp:
+            if t == '':
+                temp.remove(t)
+        filehistory = []
+        for i in range(0, len(temp)-1, 2):
+            filehistory.append(f"{temp[i]}{temp[i+1]}")
+
     if filehistory == "":
-        filehistory = "This file has no history (it may not be part of the git repository)."
+        filehistory = ["This file has no history (it may not be part of the git repository)."]
+
+    filehistory = "<pre>\n" + "</pre><pre>\n".join(filehistory) + "</pre>"
 
     return filehistory
 
