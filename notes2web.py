@@ -211,7 +211,7 @@ def main(args):
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
         html = html.replace('$filehistory$', filehistory)
         with open(filename) as fp:
-            html += fp.read()
+            html += fp.read().replace("<", "&lt;").replace(">", "&gt;")
         html += TEXT_ARTICLE_TEMPLATE_FOOT
 
         with open(output_filename, 'w+') as fp:
