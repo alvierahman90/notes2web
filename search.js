@@ -68,9 +68,15 @@ function updateResults() {
 }
 
 searchBar.addEventListener('keyup', e => {
+  console.log(e)
   // if user pressed enter
   if (e.keyCode === 13) {
+    if (e.shiftKey) {
+      window.open(results[0].item.path, '_blank')
+    } else {
     window.location.href = results[0].item.path
+    }
+    return
   }
   updateResults()
 })
