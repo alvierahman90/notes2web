@@ -1,6 +1,6 @@
 # notes2web
 
-View your notes as a static html site.
+View your notes as a static html site. Browse a live sample of it [here](https://notes.alv.cx).
 
 ![](./screenshot.png)
 
