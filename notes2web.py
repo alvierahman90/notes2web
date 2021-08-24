@@ -164,7 +164,7 @@ def main(args):
             for tag in fm.get('tags'):
                 t = {
                     'path': str(pathlib.Path(output_filename).relative_to(args.output_dir)),
-                    'title': fm.get('title')
+                    'title': fm.get('title') or pathlib.Path(filename).name
                 }
                 if tag in tag_dict.keys():
                     tag_dict[tag].append(t)
@@ -181,7 +181,7 @@ def main(args):
 
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-            'title': fm.get('title'),
+            'title': fm.get('title') or pathlib.Path(filename).name,
             'tags': fm.get('tags'),
             'headers': header_lines
         })
@@ -284,9 +284,9 @@ def main(args):
                     soup = bs(fp.read(), 'html.parser')
 
                 try:
-                    title = soup.find('title').get_text()
+                    title = soup.find('title').get_text() or pathlib.Path(path).name
                 except AttributeError:
-                    title = path
+                    title = pathlib.Path(path).stem
             elif fullpath.is_dir():
                 title = path
             else:
