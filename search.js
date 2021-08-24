@@ -10,11 +10,14 @@ const fuse = new Fuse(data, {
 
 const searchBar = document.getElementById('search')
 const resultsMax = document.getElementById('resultsMax')
-const results = document.getElementById('results')
+const resultsDiv = document.getElementById('results')
 
-function callback() {
-  results.innerHTML = ''
-  fuse.search(searchBar.value).slice(0, parseInt(resultsMax.value)).forEach(r => {
+var results = []
+
+function updateResults() {
+  resultsDiv.innerHTML = ''
+  results = fuse.search(searchBar.value).slice(0, parseInt(resultsMax.value))
+  results.forEach(r => {
     wrapper = document.createElement('div')
     wrapper.className = "article"
 
@@ -60,12 +63,18 @@ function callback() {
       wrapper.appendChild(p)
     })
 
-    results.appendChild(wrapper)
+    resultsDiv.appendChild(wrapper)
   })
 }
 
-searchBar.addEventListener('keyup', callback)
-searchBar.addEventListener('change', callback)
-resultsMax.addEventListener('keyup', callback)
-resultsMax.addEventListener('change', callback)
-callback()
+searchBar.addEventListener('keyup', e => {
+  // if user pressed enter
+  if (e.keyCode === 13) {
+    window.location.href = results[0].item.path
+  }
+  updateResults()
+})
+searchBar.addEventListener('change', updateResults)
+resultsMax.addEventListener('keyup', updateResults)
+resultsMax.addEventListener('change', updateResults)
+updateResults()
