@@ -31,7 +31,7 @@ def get_files(folder):
             if '/.git' in root:
                 continue
             name = os.path.join(root, filename)
-            if os.path.splitext(name)[1] == '.md':
+            if pathlib.Path(name).suffix == '.md':
                 markdown.append(name)
             elif re.match(r'^text/', magic.from_file(name, mime=True)):
                 plaintext.append(name)
@@ -46,7 +46,7 @@ def git_filehistory(working_dir, filename):
     git_response = subprocess.run(
             [
                 'git',
-                f"--git-dir={os.path.join(working_dir, '.git')}",
+                f"--git-dir={working_dir.joinpath('.git')}",
                 "log",
                 "-p",
                 "--",
@@ -134,48 +134,44 @@ def main(args):
     with open(args.extra_index_content) as fp:
         EXTRA_INDEX_CONTENT = fp.read()
 
-    if not os.path.exists(args.output_dir):
-        os.makedirs(args.output_dir, exist_ok=True)
+    if args.output_dir.is_file()
+        print(f"Output directory ({args.output_dir}) cannot be a file.")
 
-    if os.path.isfile(args.output_dir):
-        print("Output directory ({output_dir}) cannot be a file.")
-
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
     markdown_files, plaintext_files, other_files = get_files(args.notes)
+
     all_entries=[]
-
-    print(f"{args.index_article_names=}")
-
     dirs_with_index_article = []
+    tag_dict = {}
 
     print(f"{markdown_files=}")
-    tag_dict = {}
     for filename in markdown_files:
         print(f"{filename=}")
-        print(f"{os.path.basename(filename)=}")
 
+        # calculate output filename
+        output_filename = args.output_dir.joinpath('notes').joinpath(
+            pathlib.Path(filename).relative_to(args.notes)
+        ).with_suffix('.html')
         if os.path.basename(filename) in args.index_article_names:
-            output_filename = os.path.join(
-                    os.path.dirname(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes', filename))),
-                    'index.html'
-                    )
-            dirs_with_index_article.append(os.path.dirname(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename)))
-        else:
-            output_filename = os.path.splitext(re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename))[0] + '.html'
+            output_filename = output_filename.parent.joinpath('index.html')
+            dirs_with_index_article.append(str(output_filename.parent))
+        print(f"{output_filename=}")
 
+        # extract tags from frontmatter, save to tag_dict
         fm = frontmatter.load(filename)
         if isinstance(fm.get('tags'), list):
             for tag in fm.get('tags'):
+                t = {
+                    'path': str(pathlib.Path(output_filename).relative_to(args.output_dir)),
+                    'title': fm.get('title')
+                }
                 if tag in tag_dict.keys():
-                    tag_dict[tag].append({
-                        'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-                        'title': fm.get('title')
-                        })
+                    tag_dict[tag].append(t)
                 else:
-                    tag_dict[tag] = [ {
-                        'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-                        'title': fm.get('title')
-                        } ]
+                    tag_dict[tag] = [t]
+
+        # find headers in markdown
         with open(filename) as fp:
             lines = fp.read().split('\n')
         header_lines = []
@@ -183,7 +179,6 @@ def main(args):
             if re.match('^#{1,6} \S', line):
                 header_lines.append(" ".join(line.split(" ")[1:]))
 
-        print(f"{output_filename=}")
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': fm.get('title'),
@@ -191,11 +186,11 @@ def main(args):
             'headers': header_lines
         })
 
-        filehistory = git_filehistory(args.notes, filename)
-
+        # update file if required
         if update_required(filename, output_filename) or args.force:
+            filehistory = git_filehistory(args.notes, filename)
             html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}', '-V', f'filehistory={filehistory}'])
-            os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+            pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
 
             with open(output_filename, 'w+') as fp:
                 fp.write(html)
@@ -203,9 +198,15 @@ def main(args):
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
         filehistory = git_filehistory(args.notes, filename)
-        title = os.path.basename(re.sub(f"^{args.notes.name}", args.output_dir.name, filename))
-        output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename) + '.html'
-        os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+        title = os.path.basename(filename)
+        output_filename = str(
+            args.output_dir.joinpath('notes').joinpath(
+                pathlib.Path(filename).relative_to(args.notes)
+            )
+        ) + '.html'
+        print(f"{output_filename=}")
+
+        pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
         html = re.sub(r'\$h1title\$', title, html)
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
@@ -225,8 +226,12 @@ def main(args):
 
     print(f"{other_files=}")
     for filename in other_files:
-        output_filename = re.sub(f"^{args.notes.name}", os.path.join(args.output_dir.name, 'notes'), filename)
-        os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+        output_filename = str(
+            args.output_dir.joinpath('notes').joinpath(
+                pathlib.Path(filename).relative_to(args.notes)
+            )
+        )
+        pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
@@ -235,8 +240,8 @@ def main(args):
         })
         shutil.copyfile(filename, output_filename)
 
-    tagdir = os.path.join(args.output_dir, '.tags')
-    os.makedirs(tagdir, exist_ok=True)
+    tagdir = args.output_dir.joinpath('.tags')
+    tagdir.mkdir(parents=True, exist_ok=True)
 
     for tag in tag_dict.keys():
         html = re.sub(r'\$title\$', f'{tag}', INDEX_TEMPLATE_HEAD)
@@ -247,30 +252,34 @@ def main(args):
             html += f"<div class=\"article\"><a href=\"/{entry['path']}\">{entry['title']}</a></div>"
         html += INDEX_TEMPLATE_FOOT
 
-        with open(os.path.join(tagdir, f'{tag}.html'), 'w+') as fp:
+        with open(tagdir.joinpath(f'{tag}.html'), 'w+') as fp:
             fp.write(html)
 
 
 
     dirs_to_index = [args.output_dir.name] + get_dirs(args.output_dir)
     print(f"{dirs_to_index=}")
-    print(f"{os.path.commonpath(dirs_to_index)=}")
+    print(f"{dirs_with_index_article=}")
 
-    for directory in dirs_to_index:
-        if directory in dirs_with_index_article:
+    for d in dirs_to_index:
+        print(f"{d in dirs_with_index_article=} {d=}")
+        if d in dirs_with_index_article:
             continue
+
+        directory = pathlib.Path(d)
         paths = os.listdir(directory)
-        print(f"{paths=}")
+        #print(f"{paths=}")
 
         indexentries = []
         
-        for path in paths:
-            print(f"{path=}")
-            if path in [ 'index.html', '.git' ]:
+        for p in paths:
+            path = pathlib.Path(p)
+            #print(f"{path=}")
+            if p in [ 'index.html', '.git' ]:
                 continue
 
-            fullpath = os.path.join(directory, path)
-            if os.path.splitext(path)[1] == '.html':
+            fullpath = directory.joinpath(path)
+            if path.suffix == '.html':
                 with open(fullpath) as fp:
                     soup = bs(fp.read(), 'html.parser')
 
@@ -278,28 +287,28 @@ def main(args):
                     title = soup.find('title').get_text()
                 except AttributeError:
                     title = path
-            elif os.path.isdir(fullpath):
+            elif fullpath.is_dir():
                 title = path
             else:
                 # don't add plaintext files to index, since they have a html wrapper
                 continue
 
-            if title.strip() == '':
+            if str(title).strip() == '':
                 title = path
 
             indexentries.append({
-                'title': title,
-                'path': path,
-                'isdirectory': os.path.isdir(fullpath)
+                'title': str(title),
+                'path': str(path),
+                'isdirectory': fullpath.is_dir()
                 })
 
-        indexentries.sort(key=lambda entry: entry['title'])
+        indexentries.sort(key=lambda entry: str(entry['title']))
         indexentries.sort(key=lambda entry: entry['isdirectory'], reverse=True)
         
-        html = re.sub(r'\$title\$', directory, INDEX_TEMPLATE_HEAD)
-        html = re.sub(r'\$h1title\$', directory, html)
+        html = re.sub(r'\$title\$', str(directory), INDEX_TEMPLATE_HEAD)
+        html = re.sub(r'\$h1title\$', str(directory), html)
         html = re.sub(r'\$extra_content\$',
-                EXTRA_INDEX_CONTENT if directory == os.path.commonpath(dirs_to_index) else '',
+                EXTRA_INDEX_CONTENT if directory == args.notes else '',
                 html
                 )
 
@@ -307,13 +316,13 @@ def main(args):
             html += f"<div class=\"article\"><a href=\"{entry['path']}\">{entry['title']}{'/' if entry['isdirectory'] else ''}</a></div>"
         html += INDEX_TEMPLATE_FOOT
 
-        with open(os.path.join(directory, 'index.html'), 'w+') as fp:
+        with open(directory.joinpath('index.html'), 'w+') as fp:
             fp.write(html)
 
-    shutil.copyfile(args.stylesheet, os.path.join(args.output_dir.name, 'styles.css'))
-    shutil.copyfile(args.fuse, os.path.join(args.output_dir.name, 'fuse.js'))
-    shutil.copyfile(args.searchjs, os.path.join(args.output_dir.name, 'search.js'))
-    with open(os.path.join(args.output_dir.name, 'index.html'), 'w+') as fp:
+    shutil.copyfile(args.stylesheet, args.output_dir.joinpath('styles.css'))
+    shutil.copyfile(args.fuse, args.output_dir.joinpath('fuse.js'))
+    shutil.copyfile(args.searchjs, args.output_dir.joinpath('search.js'))
+    with open(args.output_dir.joinpath('index.html'), 'w+') as fp:
         with open(args.home_index) as fp2:
             html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
             html = re.sub(r'\$h1title\$', args.output_dir.parts[0], html)
