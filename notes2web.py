@@ -134,7 +134,7 @@ def main(args):
     with open(args.extra_index_content) as fp:
         EXTRA_INDEX_CONTENT = fp.read()
 
-    if args.output_dir.is_file()
+    if args.output_dir.is_file():
         print(f"Output directory ({args.output_dir}) cannot be a file.")
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
