@@ -90,3 +90,11 @@ Then you just have to point a webserver at `output-dir`.
 ```
 # make uninstall
 ```
+
+## Acknowledgements
+
+Default synatx highlighting is based off [Pygments](https://pygments.org/)' default theme and
+made using Pandoc v2.7.2.
+I found the theme [here](https://github.com/tajmone/pandoc-goodies/blob/master/skylighting/css/built-in-styles/pygments.css).
+
+Pretty sure the link colours are taken from [thebestmotherfucking.website](https://thebestmotherfucking.website/).
