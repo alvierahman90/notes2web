@@ -302,7 +302,7 @@ def main(args):
                 'isdirectory': fullpath.is_dir()
                 })
 
-        indexentries.sort(key=lambda entry: str(entry['title']))
+        indexentries.sort(key=lambda entry: str(entry['title']).lower())
         indexentries.sort(key=lambda entry: entry['isdirectory'], reverse=True)
         
         html = re.sub(r'\$title\$', str(directory), INDEX_TEMPLATE_HEAD)
