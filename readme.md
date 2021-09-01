@@ -15,6 +15,7 @@ doing it for me:
 - It was annoying to sync to my phone
 - PDFs do not scale so they were hard to read on smaller screens
 - Probably more reasons I can't think of right now
+- Fun
 
 
 ## Install
@@ -32,11 +33,13 @@ doing it for me:
 
 - notes2web reads the following YAML [frontmatter](https://jekyllrb.com/docs/front-matter/) variable:
 
-        - `author` --- The person(s) who wrote the article
-        - `tags` --- A YAML list of tags which the article relates to - this is used for browsing and also searching
-        - `title` --- The title of the article
+  - `author` --- The person(s) who wrote the article
+  - `tags` --- A YAML list of tags which the article relates to - this is used for browsing and also
+               searching
+  - `title` --- The title of the article
         
-- notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for searching
+- notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
+  searching
 - notes2web attempts to display file history through the `git log` command
 
 ## CLI Usage
