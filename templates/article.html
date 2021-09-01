@@ -17,6 +17,7 @@
 	]</p>
 	<p class="smallText">
 		written by $for(author)$$author$$sep$, $endfor$
+	</p>
 	<p class="smallText">
 		syntax highlighting based on <a href="https://pygments.org/">Pygments'</a> default
 		colors
@@ -29,6 +30,12 @@
 			Commit log (file history)
 		</summary>
 		$filehistory$
+	</details>
+	<details>
+		<summary class="smallText">
+			License
+		</summary>
+		<pre>$licenseFull$</pre>
 	</details>
 	<div>
 	$body$

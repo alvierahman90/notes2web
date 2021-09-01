@@ -41,6 +41,10 @@ doing it for me:
 - notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
   searching
 - notes2web attempts to display file history through the `git log` command
+- notes2web looks for the plaintext file `LICENSE` in the root directory of your notes
+
+  This is optional but if you would like to add a license you can find one
+  [here](https://choosealicense.com).
 
 ## CLI Usage
 

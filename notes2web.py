@@ -140,6 +140,13 @@ def main(args):
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
+    notes_license = "This note has no copyright license.",
+    print(f"{notes_license=}")
+    license_path = args.notes.joinpath("LICENSE")
+    if license_path.exists():
+        with open(license_path) as fp:
+            notes_license = fp.read()
+
     markdown_files, plaintext_files, other_files = get_files(args.notes)
 
     all_entries=[]
@@ -190,7 +197,11 @@ def main(args):
         # update file if required
         if update_required(filename, output_filename) or args.force:
             filehistory = git_filehistory(args.notes, filename)
-            html = pypandoc.convert_file(filename, 'html', extra_args=[f'--template={args.template}', '-V', f'filehistory={filehistory}'])
+            html = pypandoc.convert_file(filename, 'html', extra_args=[
+                f'--template={args.template}',
+                '-V', f'filehistory={filehistory}',
+                '-V', f'licenseFull={notes_license}'
+            ])
             pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
 
             with open(output_filename, 'w+') as fp:
@@ -211,6 +222,7 @@ def main(args):
         html = re.sub(r'\$title\$', title, TEXT_ARTICLE_TEMPLATE_HEAD)
         html = re.sub(r'\$h1title\$', title, html)
         html = re.sub(r'\$raw\$', os.path.basename(filename), html)
+        html = re.sub(r'\$licenseFull\$', notes_license, html)
         html = html.replace('$filehistory$', filehistory)
         with open(filename) as fp:
             html += fp.read().replace("<", "&lt;").replace(">", "&gt;")
