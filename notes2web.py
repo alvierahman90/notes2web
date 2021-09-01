@@ -41,6 +41,7 @@ def get_files(folder):
 
     return markdown, plaintext, other
 
+
 def git_filehistory(working_dir, filename):
     print(f"{pathlib.Path(filename).relative_to(working_dir)=}")
     git_response = subprocess.run(
@@ -313,7 +314,13 @@ def main(args):
                 )
 
         for entry in indexentries:
-            html += f"<div class=\"article\"><a href=\"{entry['path']}\">{entry['title']}{'/' if entry['isdirectory'] else ''}</a></div>"
+            html += (
+                    '<div class="article">'
+                        f'<a href="{entry["path"]}">'
+                            f'{entry["title"]}{"/" if entry["isdirectory"] else ""}'
+                        '</a>'
+                    '</div>'
+            )
         html += INDEX_TEMPLATE_FOOT
 
         with open(directory.joinpath('index.html'), 'w+') as fp:
