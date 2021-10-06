@@ -200,7 +200,8 @@ def main(args):
             html = pypandoc.convert_file(filename, 'html', extra_args=[
                 f'--template={args.template}',
                 '-V', f'filehistory={filehistory}',
-                '-V', f'licenseFull={notes_license}'
+                '-V', f'licenseFull={notes_license}',
+                '--mathjax'
             ])
             pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
 
