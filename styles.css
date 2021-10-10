@@ -6,7 +6,6 @@ body {
 	max-width: 800px;
 	padding: 1em;
 	line-height: 1.4;
-	text-align: justify;
 	background-color: #fefefe;
 	overflow-wrap: break-word;
 }
@@ -46,7 +45,7 @@ li {
 	margin-bottom: 1em;
 }
 
-img {
+img, video {
 	margin: 0 auto;
 	display: block;
 	max-width: 100%;
