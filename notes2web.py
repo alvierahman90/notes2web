@@ -77,6 +77,8 @@ def git_filehistory(working_dir, filename):
     if filehistory == "":
         filehistory = ["This file has no history (it may not be part of the git repository)."]
 
+    filehistory = [ x.replace("<", "&lt;").replace(">", "&gt;") for x in filehistory]
+
     filehistory = "<pre>\n" + "</pre><pre>\n".join(filehistory) + "</pre>"
 
     return filehistory
