@@ -45,10 +45,6 @@ summary > * {
 	display: inline
 }
 
-li {
-	margin-bottom: 1em;
-}
-
 img, video {
 	margin: 0 auto;
 	display: block;

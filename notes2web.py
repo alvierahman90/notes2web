@@ -203,7 +203,8 @@ def main(args):
                 f'--template={args.template}',
                 '-V', f'filehistory={filehistory}',
                 '-V', f'licenseFull={notes_license}',
-                '--mathjax'
+                '--mathjax',
+                '--toc'
             ])
             pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
 
