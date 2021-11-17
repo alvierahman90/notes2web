@@ -4,7 +4,24 @@ const TAGS = "tags"
 const TITLE = "title"
 
 const fuse = new Fuse(data, {
-  keys: [ HEADERS, PATH, TAGS, TITLE ],
+  keys: [
+    {
+      name: HEADERS,
+      weight: 1
+    },
+    {
+      name: PATH,
+      weight: 1
+    },
+    {
+      name: TAGS,
+      weight: 1
+    },
+    {
+      name: TITLE,
+      weight: 1.5
+    }
+  ],
   includeMatches: true
 })
 
