@@ -1,75 +1,7 @@
-body {
-	font-family: "Open Sans", sans-serif;
-	color: #454545;
-	font-size: 16px;
-	margin: 2em auto;
-	max-width: 800px;
-	padding: 1em;
-	line-height: 1.4;
-	background-color: #fefefe;
-	overflow-wrap: break-word;
-}
-
-a { color: #07a; }
-a:visited { color: #941352; }
-
-img[class="centered"] {
-	margin: 0 auto;
-	display: block;
-}
-
-table {
-	border-collapse: collapse;
-	margin: 1em auto;
-	max-width: 100%;
-}
-th, td {
-	padding: 1em;
-	border: 1px solid #454545;
-	margin: 0;
-}
-
-
-pre {
-	background-color: #d9d9d9 ;
-	color: #000;
-	padding: 1em;
-	overflow-x: scroll;
-}
-
-details {
-	padding: 1em 0 1em 0;
-}
-
-summary > * {
-	display: inline
-}
-
-img, video {
-	margin: 0 auto;
-	display: block;
-	max-width: 100%;
-}
-
-figcaption {
-	margin: 0 auto;
-	width: max-content;
-}
+@import url("https://alv.cx/styles.css");
 
 .article {
 	margin: 1em;
-}
-
-blockquote {
-	border-left: 0.4em solid #454545;
-	margin-left: 0;
-	padding-left: 1em;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-}
-
-blockquote * {
-	margin: 0;
 }
 
 #searchWrapper > input {
@@ -106,14 +38,6 @@ blockquote * {
 	padding: 0
 }
 
-kbd {
-	background-color: #d9d9d9;
-	border-radius: 0.25em;
-	padding: 0.2em;
-	box-shadow: 0.15em 0.15em 0 #c9c9c9;
-	margin-left: 0.2em;
-	margin-right: 0.2em;
-}
 
 /*  ==============================================================================
                          Pygments (pandoc built-in style)
