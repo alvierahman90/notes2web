@@ -97,7 +97,17 @@ searchBar.addEventListener('keyup', e => {
   }
   updateResults()
 })
+
 searchBar.addEventListener('change', updateResults)
 resultsMax.addEventListener('keyup', updateResults)
 resultsMax.addEventListener('change', updateResults)
-updateResults()
+
+const searchParams = new URL(window.location.href).searchParams;
+searchBar.value = searchParams.get('q');
+updateResults();
+
+console.log(results)
+
+if (searchParams.has('lucky')) {
+  window.location.href = results[0].item.path;
+}
