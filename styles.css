@@ -25,7 +25,13 @@ body {
 	display: flex
 }
 
-#search { flex-grow: 9 }
+#search { flex-grow: 9; }
+
+#sidebar #search {
+	flex-grow: 0;
+	padding: 1em;
+	margin: 0 1em 1em 1em;
+}
 
 #results {
 	overflow-x: scroll;
@@ -63,6 +69,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	min-width: 20em;
+	padding-right: 1em;
 }
 
 #toc {

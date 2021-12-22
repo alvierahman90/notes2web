@@ -116,6 +116,7 @@ def get_args():
     parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
     parser.add_argument('--fuse', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/fuse.js'))
     parser.add_argument('--searchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/search.js'))
+    parser.add_argument('--tocsearchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/toc_search.js'))
     return parser.parse_args()
 
 
@@ -345,6 +346,7 @@ def main(args):
     shutil.copyfile(args.stylesheet, args.output_dir.joinpath('styles.css'))
     shutil.copyfile(args.fuse, args.output_dir.joinpath('fuse.js'))
     shutil.copyfile(args.searchjs, args.output_dir.joinpath('search.js'))
+    shutil.copyfile(args.tocsearchjs, args.output_dir.joinpath('toc_search.js'))
     with open(args.output_dir.joinpath('index.html'), 'w+') as fp:
         with open(args.home_index) as fp2:
             html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
