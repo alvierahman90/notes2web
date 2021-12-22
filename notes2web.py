@@ -332,11 +332,11 @@ def main(args):
 
         for entry in indexentries:
             html += (
-                    '<div class="article">'
+                    '<li class="article">'
                         f'<a href="{entry["path"]}">'
                             f'{entry["title"]}{"/" if entry["isdirectory"] else ""}'
                         '</a>'
-                    '</div>'
+                    '</li>'
             )
         html += INDEX_TEMPLATE_FOOT
 
