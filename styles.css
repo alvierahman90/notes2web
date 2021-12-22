@@ -1,5 +1,15 @@
 @import url("https://alv.cx/styles.css");
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+	max-width: none;
+	margin: none;
+	padding: none;
+}
+
 .article {
 	margin: 1em;
 }
@@ -33,9 +43,73 @@
 	background-color: #86c1b9;
 }
 
+#sidebar > #header { padding-bottom: 1em; color: #656565;}
+
 #header > * {
 	margin: 0;
-	padding: 0
+	padding: 0;
+}
+
+#contentWrapper {
+	display: flex
+}
+
+
+#sidebar {
+	position: sticky;
+	top: 10vh;
+	height: 80vh;
+	max-width: 30em;
+	display: flex;
+	flex-direction: column;
+	min-width: 20em;
+}
+
+#toc {
+	overflow-y: scroll;
+	overflow-x: visible;
+	max-width: 100%;
+}
+
+li {
+	margin: 0;
+}
+
+#content {
+	margin: 0 auto;
+	padding: 1em;
+	max-width: 60em;
+}
+
+#commitlog, #license { padding: 0; }
+
+#sidebar,
+#toc li > a { 
+	color: #656565;
+}
+
+#toc li { list-style: none; }
+#toc ul { margin-left: 0.75em ; padding-left: 0.75em; }
+#toc ul { border-left: 1px solid #b3b3b3;}
+#toc > ul { padding; none; padding: 0; margin: 0; border: none;max-width: 100%;}
+
+#toc li > a {
+	text-decoration: none;
+	display: inline-block;
+	width: 100%;
+	transition: 0.5s;
+	padding: 0.5em;
+	box-sizing: border-box;
+}
+#toc li > a:hover {
+	background: #d9d9d9;
+	color: black;
+}
+
+@media (max-width: 60em) {
+  /* CSS that should be displayed if width is equal to or less than 60em goes here */
+	#contentWrapper { flex-direction: column }
+	#sidebar { position: static; width: 100%; max-width: none; }
 }
 
 
