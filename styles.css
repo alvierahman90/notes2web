@@ -10,6 +10,7 @@ h3 { font-size: 1.5em; }
 
 body {
 	max-width: none;
+	width: 100%;
 	margin: none;
 	padding: none;
 }
@@ -88,7 +89,6 @@ li {
 
 #content {
 	margin: 0 auto;
-	padding: 1em;
 	width: 60em;
 	max-width: 100%;
 }
