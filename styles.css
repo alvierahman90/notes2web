@@ -120,6 +120,10 @@ ul#articlelist li a:hover {
 	color: black;
 }
 
+mjx-container {
+	overflow-x: scroll;
+}
+
 @media (max-width: 60em) {
   /* CSS that should be displayed if width is equal to or less than 60em goes here */
 	#contentWrapper { flex-direction: column }
