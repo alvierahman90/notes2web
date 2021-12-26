@@ -117,6 +117,7 @@ def get_args():
     parser.add_argument('--fuse', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/fuse.js'))
     parser.add_argument('--searchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/search.js'))
     parser.add_argument('--tocsearchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/toc_search.js'))
+    parser.add_argument('--toc-depth', type=int, default=6, dest='toc_depth')
     return parser.parse_args()
 
 
@@ -205,7 +206,7 @@ def main(args):
                 '-V', f'filehistory={filehistory}',
                 '-V', f'licenseFull={notes_license}',
                 '--mathjax',
-                '--toc'
+                '--toc', f'--toc-depth={args.toc_depth}'
             ])
             pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
 
