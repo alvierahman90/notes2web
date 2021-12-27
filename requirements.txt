@@ -3,4 +3,5 @@ pypandoc==1.5
 python-frontmatter==1.0.0
 python-magic==0.4.24
 PyYAML==5.4.1
+regex==2021.11.10
 soupsieve==2.2.1

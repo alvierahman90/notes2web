@@ -10,7 +10,7 @@ import pathlib
 import pypandoc
 import shutil
 import os
-import re
+import regex as re
 import json
 
 
