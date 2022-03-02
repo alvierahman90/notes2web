@@ -84,10 +84,12 @@ def git_filehistory(working_dir, filename):
     return filehistory
 
 
-def get_dirs(folder):
+def get_dirs_to_index(folder):
     r = []
 
     for root, folders, files in os.walk(folder):
+        if pathlib.Path(os.path.join(root, folder)).is_relative_to(folder.joinpath('permalink')):
+            continue
         [r.append(os.path.join(root, folder)) for folder in folders]
 
     return r
@@ -183,6 +185,10 @@ def main(args):
                 else:
                     tag_dict[tag] = [t]
 
+        permalink_filename = None
+        if 'uuid' in fm.keys():
+            permalink_filename = args.output_dir.joinpath('permalink').joinpath(fm['uuid']).joinpath('index.html')
+
         # find headers in markdown
         with open(filename) as fp:
             lines = fp.read().split('\n')
@@ -212,6 +218,11 @@ def main(args):
 
             with open(output_filename, 'w+') as fp:
                 fp.write(html)
+
+            if permalink_filename is not None:
+                permalink_filename.parent.mkdir(parents=True, exist_ok=True)
+                with open(permalink_filename, 'w+') as fp:
+                    fp.write(html)
 
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
@@ -276,7 +287,7 @@ def main(args):
 
 
 
-    dirs_to_index = [args.output_dir.name] + get_dirs(args.output_dir)
+    dirs_to_index = [args.output_dir.name] + get_dirs_to_index(args.output_dir)
     print(f"{dirs_to_index=}")
     print(f"{dirs_with_index_article=}")
 

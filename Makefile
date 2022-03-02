@@ -1,5 +1,5 @@
 install:
-	cp notes2web.py /usr/local/bin
+	cp notes2web.py n2w_add_uuid.py /usr/local/bin
 	pip3 install -r requirements.txt
 	mkdir -p /opt/notes2web
 	cp -r templates /opt/notes2web
@@ -9,4 +9,4 @@ install:
 	cp toc_search.js /opt/notes2web
 
 uninstall:
-	rm -rf /usr/local/bin/notes2web.py /opt/notes2web
+	rm -rf /usr/local/bin/notes2web.py /usr/local/bin/n2w_add_uuid.py /opt/notes2web

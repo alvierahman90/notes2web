@@ -1,4 +1,8 @@
 beautifulsoup4==4.9.3
+editfrontmatter==0.0.1
+Jinja2==3.0.3
+MarkupSafe==2.1.0
+oyaml==1.0
 pypandoc==1.5
 python-frontmatter==1.0.0
 python-magic==0.4.24
