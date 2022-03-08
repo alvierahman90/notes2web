@@ -7,6 +7,7 @@ install:
 	cp fuse.js /opt/notes2web
 	cp search.js /opt/notes2web
 	cp toc_search.js /opt/notes2web
+	cp permalink.js /opt/notes2web
 
 uninstall:
 	rm -rf /usr/local/bin/notes2web.py /usr/local/bin/n2w_add_uuid.py /opt/notes2web

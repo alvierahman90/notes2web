@@ -113,11 +113,13 @@ def get_args():
     parser.add_argument('-I', '--template-index-foot', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/indexfoot.html'))
     parser.add_argument('-s', '--stylesheet', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/styles.css'))
     parser.add_argument('--home_index', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/home_index.html'))
+    parser.add_argument('--permalink_index', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/permalink_index.html'))
     parser.add_argument('-e', '--extra-index-content', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/templates/extra_index_content.html'))
     parser.add_argument('-n', '--index-article-names', action='append', default=['index.md'])
     parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
     parser.add_argument('--fuse', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/fuse.js'))
     parser.add_argument('--searchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/search.js'))
+    parser.add_argument('--permalinkjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/permalink.js'))
     parser.add_argument('--tocsearchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/toc_search.js'))
     parser.add_argument('--toc-depth', type=int, default=6, dest='toc_depth')
     return parser.parse_args()
@@ -158,6 +160,7 @@ def main(args):
     all_entries=[]
     dirs_with_index_article = []
     tag_dict = {}
+    permalink_to_filepath = {}
 
     print(f"{markdown_files=}")
     for filename in markdown_files:
@@ -185,10 +188,6 @@ def main(args):
                 else:
                     tag_dict[tag] = [t]
 
-        permalink_filename = None
-        if 'uuid' in fm.keys():
-            permalink_filename = args.output_dir.joinpath('permalink').joinpath(fm['uuid']).joinpath('index.html')
-
         # find headers in markdown
         with open(filename) as fp:
             lines = fp.read().split('\n')
@@ -198,11 +197,15 @@ def main(args):
                 header_lines.append(" ".join(line.split(" ")[1:]))
 
         all_entries.append({
-            'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'path': '/' + str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': fm.get('title') or pathlib.Path(filename).name,
             'tags': fm.get('tags'),
-            'headers': header_lines
+            'headers': header_lines,
+            'uuid': fm.get('uuid')
         })
+
+        if 'uuid' in fm.keys():
+            permalink_to_filepath[fm['uuid']] = all_entries[-1]['path']
 
         # update file if required
         if update_required(filename, output_filename) or args.force:
@@ -218,11 +221,6 @@ def main(args):
 
             with open(output_filename, 'w+') as fp:
                 fp.write(html)
-
-            if permalink_filename is not None:
-                permalink_filename.parent.mkdir(parents=True, exist_ok=True)
-                with open(permalink_filename, 'w+') as fp:
-                    fp.write(html)
 
     print(f"{plaintext_files=}")
     for filename in plaintext_files:
@@ -359,6 +357,7 @@ def main(args):
     shutil.copyfile(args.fuse, args.output_dir.joinpath('fuse.js'))
     shutil.copyfile(args.searchjs, args.output_dir.joinpath('search.js'))
     shutil.copyfile(args.tocsearchjs, args.output_dir.joinpath('toc_search.js'))
+    shutil.copyfile(args.permalinkjs, args.output_dir.joinpath('permalink.js'))
     with open(args.output_dir.joinpath('index.html'), 'w+') as fp:
         with open(args.home_index) as fp2:
             html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
@@ -366,6 +365,12 @@ def main(args):
 
         html = re.sub(r'\$data\$', json.dumps(all_entries), html)
 
+        fp.write(html)
+    permalink_dir = args.output_dir.joinpath('permalink')
+    permalink_dir.mkdir(exist_ok=True)
+    with open(args.permalink_index) as fp:
+        html = re.sub(r'\$data\$', json.dumps(permalink_to_filepath), fp.read())
+    with open(permalink_dir.joinpath('index.html'), 'w+') as fp:
         fp.write(html)
     print(tag_dict)
 
