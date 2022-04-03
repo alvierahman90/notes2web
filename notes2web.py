@@ -343,9 +343,9 @@ def main(args):
         for entry in indexentries:
             html += (
                     '<li class="article">'
-                        f'<a href="{entry["path"]}">'
+                        f'<a href="{entry["path"]}"><p>'
                             f'{entry["title"]}{"/" if entry["isdirectory"] else ""}'
-                        '</a>'
+                        '</p></a>'
                     '</li>'
             )
         html += INDEX_TEMPLATE_FOOT
