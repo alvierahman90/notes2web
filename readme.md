@@ -37,6 +37,7 @@ doing it for me:
   - `tags` --- A YAML list of tags which the article relates to - this is used for browsing and also
                searching
   - `title` --- The title of the article
+  - `uuid` --- A unique identifier used for permalinks. More below.
         
 - notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
   searching
@@ -45,6 +46,18 @@ doing it for me:
 
   This is optional but if you would like to add a license you can find one
   [here](https://choosealicense.com).
+
+### Permalinks
+
+Permalinks are currently rather basic and requires JavaScript to be enabled on the local computer.
+In order to identify documents between file changes, a unique identifier is used to identify a file.
+
+This unique identifier can be generated using the `uuidgen` command in the `uuid-runtime` package or
+`str(uuid.uuid())` in the `uuid` python package.
+
+The included `n2w_add_uuid.py` will add a UUID to a markdown file which does not have a UUID in it
+already.
+Combine it with `find` to UUIDify all your markdown files (but make a backup first).
 
 ## CLI Usage
 
