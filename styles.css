@@ -31,10 +31,10 @@ body {
 }
 
 .matchHighlight {
-	background-color: #86c1b9;
+	background-color: var(--blue);
 }
 
-#sidebar > #header { padding-bottom: 1em; color: #656565;}
+#sidebar > #header { padding-bottom: 1em; color: var(--fg-lc);}
 
 #header > * {
 	margin: 0;
@@ -73,12 +73,12 @@ body {
 
 #sidebar,
 #toc li > a { 
-	color: #656565;
+	color: var(--fg-lc);
 }
 
 #toc li, ul#articlelist { list-style: none; }
 #toc ul, ul#articlelist { margin-left: 0.75em ; padding-left: 0.75em; }
-#toc ul, ul#articlelist { border-left: 1px solid #b3b3b3;}
+#toc ul, ul#articlelist { border-left: 1px solid var(--fg-lc);}
 #toc > ul { padding; none; padding: 0; margin: 0; border: none;max-width: 100%;}
 li { padding: 0 !important; }
 
@@ -93,7 +93,7 @@ ul#articlelist > a{
 }
 #toc li > a:hover,
 ul#articlelist li a:hover {
-	background: #d9d9d9;
+	background: var(--bg-lc);
 	color: black;
 }
 
