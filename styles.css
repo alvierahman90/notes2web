@@ -98,7 +98,7 @@ ul#articlelist li a:hover {
 }
 
 mjx-container {
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 
 @media (max-width: 60em) {
