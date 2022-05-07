@@ -7,7 +7,7 @@ const fuse = new Fuse(data, {
   keys: [
     {
       name: HEADERS,
-      weight: 2
+      weight: 1.5
     },
     {
       name: PATH,
@@ -19,7 +19,7 @@ const fuse = new Fuse(data, {
     },
     {
       name: TITLE,
-      weight: 1.5
+      weight: 4
     }
   ],
   includeMatches: true
