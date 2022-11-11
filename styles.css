@@ -101,10 +101,11 @@ mjx-container {
 	overflow-x: auto;
 }
 
-@media (max-width: 60em) {
+@media (max-width: 80em) {
   /* CSS that should be displayed if width is equal to or less than 60em goes here */
 	#contentWrapper { flex-direction: column }
-	#sidebar { position: static; width: 100%; max-width: none; }
+	#sidebar { position: static; width: 100%; max-width: none; height: auto; }
+	#tocWrapper { display: none }
 }
 
 
