@@ -22,6 +22,9 @@ INDEX_TEMPLATE_HEAD = None
 EXTRA_INDEX_CONTENT = None
 
 
+def is_plaintext(filename):
+    return re.match(r'^text/', magic.from_file(str(filename), mime=True)) is not None
+
 def get_files(folder):
     markdown = []
     plaintext = []
@@ -34,7 +37,7 @@ def get_files(folder):
             name = os.path.join(root, filename)
             if pathlib.Path(name).suffix == '.md':
                 markdown.append(name)
-            elif re.match(r'^text/', magic.from_file(name, mime=True)):
+            elif is_plaintext(name):
                 plaintext.append(name)
                 other.append(name)
             else:
@@ -283,10 +286,11 @@ def main(args):
                 pathlib.Path(filename).relative_to(args.notes)
             )
         )
+        title = os.path.basename(filename)
         pathlib.Path(output_filename).parent.mkdir(parents=True, exist_ok=True)
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-            'title': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
+            'title': title,
             'tags': [get_inherited_tags(filename, args.notes)],
             'headers': []
         })
@@ -331,6 +335,7 @@ def main(args):
                 continue
 
             fullpath = directory.joinpath(path)
+            title = path.name
             if path.suffix == '.html':
                 with open(fullpath) as fp:
                     soup = bs(fp.read(), 'html.parser')
@@ -341,7 +346,7 @@ def main(args):
                     title = pathlib.Path(path).stem
             elif fullpath.is_dir():
                 title = path
-            else:
+            elif is_plaintext(fullpath):
                 # don't add plaintext files to index, since they have a html wrapper
                 continue
 
@@ -350,7 +355,7 @@ def main(args):
 
             indexentries.append({
                 'title': str(title),
-                'path': str(path),
+                'path': './' + str(path),
                 'isdirectory': fullpath.is_dir()
                 })
 
