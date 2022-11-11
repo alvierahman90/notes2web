@@ -12,6 +12,7 @@ import shutil
 import os
 import regex as re
 import json
+import yaml
 
 
 TEXT_ARTICLE_TEMPLATE_FOOT = None
@@ -40,6 +41,25 @@ def get_files(folder):
                 other.append(name)
 
     return markdown, plaintext, other
+
+def get_inherited_tags(file, base_folder):
+    tags = []
+    folder = pathlib.Path(file)
+
+    while folder != base_folder.parent:
+        print(f"get_inherited_tags {folder=}")
+        folder = pathlib.Path(folder).parent
+        folder_metadata = folder.joinpath('.n2w.yml')
+        if not folder_metadata.exists():
+            continue
+
+        with open(folder.joinpath('.n2w.yml')) as fp:
+            folder_properties = yaml.safe_load(fp)
+
+        tags += folder_properties.get('itags')
+
+    print(f"get_inherited_tags {tags=}")
+    return tags
 
 
 def git_filehistory(working_dir, filename):
@@ -178,7 +198,7 @@ def main(args):
         # extract tags from frontmatter, save to tag_dict
         fm = frontmatter.load(filename)
         if isinstance(fm.get('tags'), list):
-            for tag in fm.get('tags'):
+            for tag in fm.get('tags') + get_inherited_tags(filename, args.notes):
                 t = {
                     'path': str(pathlib.Path(output_filename).relative_to(args.output_dir)),
                     'title': fm.get('title') or pathlib.Path(filename).name
@@ -210,10 +230,14 @@ def main(args):
         # update file if required
         if update_required(filename, output_filename) or args.force:
             filehistory = git_filehistory(args.notes, filename)
-            html = pypandoc.convert_file(filename, 'html', extra_args=[
+            with open(filename) as fp:
+                article = frontmatter.load(fp)
+
+            article['tags'] += get_inherited_tags(filename, args.notes)
+            article['filehistory'] = filehistory
+            article['licenseFull'] = notes_license
+            html = pypandoc.convert_text(frontmatter.dumps(article), 'html', format='md', extra_args=[
                 f'--template={args.template}',
-                '-V', f'filehistory={filehistory}',
-                '-V', f'licenseFull={notes_license}',
                 '--mathjax',
                 '--toc', f'--toc-depth={args.toc_depth}'
             ])
@@ -248,7 +272,7 @@ def main(args):
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': title,
-            'tags': [],
+            'tags': [get_inherited_tags(filename, args.notes)],
             'headers': []
         })
 
@@ -263,7 +287,7 @@ def main(args):
         all_entries.append({
             'path': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
-            'tags': [],
+            'tags': [get_inherited_tags(filename, args.notes)],
             'headers': []
         })
         shutil.copyfile(filename, output_filename)

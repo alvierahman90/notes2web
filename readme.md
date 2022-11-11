@@ -61,6 +61,22 @@ The included `n2w_add_uuid.py` will add a UUID to a markdown file which does not
 already.
 Combine it with `find` to UUIDify all your markdown files (but make a backup first).
 
+### Inherited Properties
+
+Notes can inherit a some properties from their parent folder(s) by creating a `.n2w.yml` file in a
+folder.
+
+#### Tags
+
+If you have a folder `uni` with all you university notes, you might want all the files in there to
+be tagged `uni`:
+
+`NOTES_PATH/uni/.n2w.yaml`:
+
+```yaml
+itags: [ university ]
+```
+
 ## CLI Usage
 
 ```
