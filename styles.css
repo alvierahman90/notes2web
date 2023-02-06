@@ -101,6 +101,8 @@ mjx-container {
 	overflow-x: auto;
 }
 
+p.metadata { margin: 0 }
+
 @media (max-width: 80em) {
   /* CSS that should be displayed if width is equal to or less than 60em goes here */
 	#contentWrapper { flex-direction: column }
