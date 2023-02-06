@@ -62,7 +62,7 @@ def get_inherited_tags(file, base_folder):
         tags += folder_properties.get('itags')
 
     print(f"get_inherited_tags {tags=}")
-    return tags
+    return list(set(tags))
 
 
 def git_filehistory(working_dir, filename):
@@ -201,7 +201,7 @@ def main(args):
         # extract tags from frontmatter, save to tag_dict
         fm = frontmatter.load(filename)
         if isinstance(fm.get('tags'), list):
-            for tag in fm.get('tags') + get_inherited_tags(filename, args.notes):
+            for tag in list(set(fm.get('tags') + get_inherited_tags(filename, args.notes))):
                 t = {
                     'path': str(pathlib.Path(output_filename).relative_to(args.output_dir)),
                     'title': fm.get('title') or pathlib.Path(filename).name
@@ -222,7 +222,7 @@ def main(args):
         all_entries.append({
             'path': '/' + str(pathlib.Path(*pathlib.Path(output_filename).parts[1:])),
             'title': fm.get('title') or pathlib.Path(filename).name,
-            'tags': fm.get('tags'),
+            'tags': list(set(fm.get('tags'))),
             'headers': header_lines,
             'uuid': fm.get('uuid')
         })
