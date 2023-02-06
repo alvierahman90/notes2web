@@ -21,6 +21,10 @@ INDEX_TEMPLATE_FOOT = None
 INDEX_TEMPLATE_HEAD = None
 EXTRA_INDEX_CONTENT = None
 
+N2W_COMMIT = ""
+# how many characters of a commit to show on landing page
+COMMIT_SHA1_NCHARS = 7
+
 
 def is_plaintext(filename):
     return re.match(r'^text/', magic.from_file(str(filename), mime=True)) is not None
@@ -63,6 +67,15 @@ def get_inherited_tags(file, base_folder):
 
     print(f"get_inherited_tags {tags=}")
     return list(set(tags))
+
+
+def git_head_sha1(working_dir):
+    git_response = subprocess.run(
+            [ 'git', f"--git-dir={working_dir.joinpath('.git')}", 'rev-parse', 'HEAD' ],
+            stdout=subprocess.PIPE
+    ).stdout.decode('utf-8')
+
+    return git_response.strip()
 
 
 def git_filehistory(working_dir, filename):
@@ -392,6 +405,8 @@ def main(args):
         with open(args.home_index) as fp2:
             html = re.sub(r'\$title\$', args.output_dir.parts[0], fp2.read())
             html = re.sub(r'\$h1title\$', args.output_dir.parts[0], html)
+            html = re.sub(r'\$n2w_commit\$', N2W_COMMIT[0:COMMIT_SHA1_NCHARS], html)
+            html = re.sub(r'\$notes_git_head_sha1\$', git_head_sha1(args.notes)[0:COMMIT_SHA1_NCHARS], html)
 
         html = re.sub(r'\$data\$', json.dumps(all_entries), html)
 
