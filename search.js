@@ -7,19 +7,19 @@ const fuse = new Fuse(data, {
   keys: [
     {
       name: HEADERS,
-      weight: 1.5
+      weight: 0.2
     },
     {
       name: PATH,
-      weight: 0.5
+      weight: 0.1
     },
     {
       name: TAGS,
-      weight: 1.5
+      weight: 0.1
     },
     {
       name: TITLE,
-      weight: 4
+      weight: 1
     }
   ],
   includeMatches: true
