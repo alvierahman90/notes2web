@@ -237,7 +237,7 @@ def main(args):
                 article = frontmatter.load(fp)
 
             article['tags'] += get_inherited_tags(filename, args.notes)
-            article['tags'] = list(set(article['tags']))
+            article['tags'] = sorted(list(set(article['tags'])))
             article['filehistory'] = filehistory
             article['licenseFull'] = notes_license
             html = pypandoc.convert_text(frontmatter.dumps(article), 'html', format='md', extra_args=[
