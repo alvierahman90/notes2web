@@ -3,6 +3,9 @@ const PATH = "path"
 const TAGS = "tags"
 const TITLE = "title"
 
+const SEARCH_TIMEOUT_MS = 100
+var SEARCH_TIMEOUT_ID = -1
+
 const fuse = new Fuse(data, {
   keys: [
     {
@@ -35,7 +38,14 @@ const resultsDiv = document.getElementById('results')
 
 var results = []
 
+function updateResultsWithTimeout() {
+  console.log("clearing timeout")
+  if (SEARCH_TIMEOUT_ID) SEARCH_TIMEOUT_ID = clearTimeout(SEARCH_TIMEOUT_ID)
+  SEARCH_TIMEOUT_ID = setTimeout(updateResults, SEARCH_TIMEOUT_MS)
+}
+
 function updateResults() {
+  console.log("updating results")
   resultsDiv.innerHTML = ''
   results = fuse.search(searchBar.value, { limit: RESULTS_MAX })
   results.forEach(r => {
@@ -99,10 +109,10 @@ searchBar.addEventListener('keyup', e => {
     }
     return
   }
-  updateResults()
+  updateResultsWithTimeout()
 })
 
-searchBar.addEventListener('change', updateResults)
+searchBar.addEventListener('change', updateResultsWithTimeout)
 
 const searchParams = new URL(window.location.href).searchParams;
 searchBar.value = searchParams.get('q');
