@@ -19,21 +19,25 @@ const fuse = new Fuse(data, {
     },
     {
       name: TITLE,
-      weight: 1
+      weight: 4
     }
   ],
-  includeMatches: true
+  includeMatches: true,
+  useExtendedSearch: true,
+  ignoreLocation: true,
+  threshhold: 0.4,
 })
 
+const RESULTS_MAX = 5
+
 const searchBar = document.getElementById('search')
-const resultsMax = document.getElementById('resultsMax')
 const resultsDiv = document.getElementById('results')
 
 var results = []
 
 function updateResults() {
   resultsDiv.innerHTML = ''
-  results = fuse.search(searchBar.value).slice(0, parseInt(resultsMax.value))
+  results = fuse.search(searchBar.value, { limit: RESULTS_MAX })
   results.forEach(r => {
     wrapper = document.createElement('div')
     wrapper.className = "article"
@@ -99,8 +103,6 @@ searchBar.addEventListener('keyup', e => {
 })
 
 searchBar.addEventListener('change', updateResults)
-resultsMax.addEventListener('keyup', updateResults)
-resultsMax.addEventListener('change', updateResults)
 
 const searchParams = new URL(window.location.href).searchParams;
 searchBar.value = searchParams.get('q');
