@@ -21,6 +21,21 @@
 		<p class="smallText metadata">
 			title: $title$
 		</p>
+		$if(lecture_slides)$
+		<p class="smallText metadata"> lecture_slides: [
+			$for(lecture_slides)$
+			<a href="$lecture_slides$">$lecture_slides$</a>$sep$,
+			$endfor$
+		]</p>
+		$endif$
+		$if(lecture_notes)$
+		<p class="smallText metadata"> lecture_notes: [
+			$for(lecture_notes)$
+			<a href="$lecture_notes$">$lecture_notes$</a>$sep$,
+			$endfor$
+		]</p>
+		$endif$
+
 		<p class="smallText metadata">
 			uuid: $uuid$ (<a href="/permalink?uuid=$uuid$">permalink</a>)
 		</p>

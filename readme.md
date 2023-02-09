@@ -40,6 +40,8 @@ doing it for me:
                searching
   - `title` --- The title of the article
   - `uuid` --- A unique identifier used for permalinks. More below.
+  - `lecture_slides` --- a list of paths pointing to lecture slides used while taking notes
+  - `lecture_notes` --- a list of paths pointing to other notes used while taking notes
         
 - notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
   searching
