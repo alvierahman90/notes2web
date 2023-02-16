@@ -153,6 +153,7 @@ def get_args():
     parser.add_argument('-F', '--force', action="store_true", help="Generate new output html even if source file was modified before output html")
     parser.add_argument('--fuse', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/fuse.js'))
     parser.add_argument('--searchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/search.js'))
+    parser.add_argument('--indexsearchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/indexsearch.js'))
     parser.add_argument('--permalinkjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/permalink.js'))
     parser.add_argument('--tocsearchjs', type=pathlib.Path, default=pathlib.Path('/opt/notes2web/toc_search.js'))
     parser.add_argument('--toc-depth', type=int, default=6, dest='toc_depth')
@@ -317,13 +318,12 @@ def main(args):
         html = re.sub(r'\$extra_content\$', '', html)
 
         for entry in tag_dict[tag]:
-            html += f"<div class=\"article\"><a href=\"/{entry['path']}\">{entry['title']}</a></div>"
-        html += INDEX_TEMPLATE_FOOT
+            entry['path'] = '/' + entry['path']
+            html += f"<div class=\"article\"><a href=\"{entry['path']}\">{entry['title']}</a></div>"
+        html += re.sub('\$data\$', json.dumps(tag_dict[tag]), INDEX_TEMPLATE_FOOT)
 
         with open(tagdir.joinpath(f'{tag}.html'), 'w+') as fp:
             fp.write(html)
-
-
 
     dirs_to_index = [args.output_dir.name] + get_dirs_to_index(args.output_dir)
     print(f"{dirs_to_index=}")
@@ -389,7 +389,7 @@ def main(args):
                         '</p></a>'
                     '</li>'
             )
-        html += INDEX_TEMPLATE_FOOT
+        html += re.sub(r'\$data\$', json.dumps(indexentries), INDEX_TEMPLATE_FOOT)
 
         with open(directory.joinpath('index.html'), 'w+') as fp:
             fp.write(html)
@@ -397,6 +397,7 @@ def main(args):
     shutil.copyfile(args.stylesheet, args.output_dir.joinpath('styles.css'))
     shutil.copyfile(args.fuse, args.output_dir.joinpath('fuse.js'))
     shutil.copyfile(args.searchjs, args.output_dir.joinpath('search.js'))
+    shutil.copyfile(args.indexsearchjs, args.output_dir.joinpath('indexsearch.js'))
     shutil.copyfile(args.tocsearchjs, args.output_dir.joinpath('toc_search.js'))
     shutil.copyfile(args.permalinkjs, args.output_dir.joinpath('permalink.js'))
     with open(args.output_dir.joinpath('index.html'), 'w+') as fp:

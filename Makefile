@@ -7,6 +7,7 @@ install:
 	cp styles.css /opt/notes2web
 	cp fuse.js /opt/notes2web
 	cp search.js /opt/notes2web
+	cp indexsearch.js /opt/notes2web
 	cp toc_search.js /opt/notes2web
 	cp permalink.js /opt/notes2web
 
