@@ -10,9 +10,10 @@ Tested with [pandoc v2.19.2](https://github.com/jgm/pandoc/releases/tag/2.19.2).
 ## Why?
 
 - View notes as a website, on any device
-- Write notes with pandoc markdown
+- Write notes with Pandoc markdown
 - Easily share notes
-- Lightweight html generated
+- Lightweight HTML generated
+- Minimal JavaScript
 
 
 ## Install
