@@ -12,10 +12,6 @@ def get_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', type=pathlib.Path)
-    parser.add_argument('--template',
-            default=pathlib.Path("/opt/notes2web/templates/n2w_add_uuid_frontmatter_template"),
-            type=pathlib.Path
-    )
     parser.add_argument('-w', '--write', action='store_true',
             help='write to file instead of stdout')
     return parser.parse_args()
@@ -23,8 +19,13 @@ def get_args():
 
 def main(args):
     """ Entry point for script """
-    with open(args.template) as fp:
-        template_str=fp.read()
+        template_str= [
+            "author: {{ author }}"
+            "date: {{ date }}"
+            "title: {{ title }}"
+            "tags: {{ tags }}"
+            "uuid: {{ uuid }}"
+            ].join("\n")
 
     with open(args.filename) as fp:
         fm_pre = frontmatter.load(fp)

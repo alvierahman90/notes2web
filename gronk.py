@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-notes2web --- view your notes as a static html site
+gronk --- view your notes as a static html site
 """
 
 
@@ -21,17 +21,17 @@ import requests
 from fileproperties import FileMap
 
 
-N2W_COMMIT = "dev"
+GRONK_COMMIT = "dev"
 
 PANDOC_SERVER_URL = os.getenv("PANDOC_SERVER_URL", r"http://localhost:3030/")
 PANDOC_TIMEOUT = int(os.getenv("PANDOC_TIMEOUT", "120"))
-CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/notes2web/css"))
-JS_DIR = Path(os.getenv("JS_DIR", "/opt/notes2web/js"))
-TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/notes2web/templates"))
+CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/gronk/css"))
+JS_DIR = Path(os.getenv("JS_DIR", "/opt/gronk/js"))
+TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/gronk/templates"))
 
 
 JINJA_ENV = jinja2.Environment(
-        loader=jinja2.PackageLoader("notes2web", str(TEMPLATES_DIR)),
+        loader=jinja2.PackageLoader("gronk", str(TEMPLATES_DIR)),
         autoescape=jinja2.select_autoescape
         )
 
@@ -191,7 +191,7 @@ def process_home_index(args, notes_git_head_sha1=None):
     post['content'] = render_markdown(post['content'])
 
     html = JINJA_TEMPLATE_HOME_INDEX.render(
-            n2w_commit = N2W_COMMIT,
+            gronk_commit = GRONK_COMMIT,
             search_data = FILEMAP.to_search_data(),
             notes_git_head_sha1 = notes_git_head_sha1,
             post=post

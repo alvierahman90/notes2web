@@ -1,9 +1,9 @@
 install:
-	cp  n2w_add_uuid.py /usr/local/bin
-	sed "s/N2W_COMMIT = \"dev\"/N2W_COMMIT = \"$$(git rev-parse --short HEAD)\"/" notes2web.py > /usr/local/bin/notes2web.py
-	mkdir -p /opt/notes2web
-	cp -r templates js css /opt/notes2web
+	cp  gronk_add_uuid.py /usr/local/bin
+	sed "s/GRONK_COMMIT = \"dev\"/GRONK_COMMIT = \"$$(git rev-parse --short HEAD)\"/" gronk.py > /usr/local/bin/gronk.py
+	mkdir -p /opt/gronk
+	cp -r templates js css /opt/gronk
 	pip3 install -r requirements.txt
 
 uninstall:
-	rm -rf /usr/local/bin/notes2web.py /usr/local/bin/n2w_add_uuid.py /opt/notes2web
+	rm -rf /usr/local/bin/gronk.py /usr/local/bin/gronk_add_uuid.py /opt/gronk

@@ -1,4 +1,4 @@
-# notes2web
+# gronk
 
 View your notes as a static html site. Browse a live sample of it [here](https://notes.alv.cx).
 
@@ -9,15 +9,10 @@ Tested with [pandoc v2.19.2](https://github.com/jgm/pandoc/releases/tag/2.19.2).
 
 ## Why?
 
-I want to be able to view my notes in a more convenient way.
-I was already writing them in Pandoc markdown and could view them as PDFs but that wasn't quite
-doing it for me:
-
-- It was inconvenient to flick through multiple files of notes to find the right PDF
-- It was annoying to sync to my phone
-- PDFs do not scale so they were hard to read on smaller screens
-- Probably more reasons I can't think of right now
-- Fun
+- View notes as a website, on any device
+- Write notes with pandoc markdown
+- Easily share notes
+- Lightweight html generated
 
 
 ## Install
@@ -27,10 +22,9 @@ doing it for me:
 
 ## Other Things to Know
 
-- notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
+- gronk indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
   searching
-- notes2web attempts to display file history through the `git log` command
-- notes2web looks for the plaintext file `LICENSE` in the root directory of your notes
+- gronk looks for the plaintext file `LICENSE` in the root directory of your notes
 
 
 ## Custom Directory Index
@@ -50,7 +44,7 @@ You can set the following frontmatter variables to customise the directory index
 
 ## Notes Metadata
 
-notes2web reads the following YAML [frontmatter](https://jekyllrb.com/docs/front-matter/) variables for metadata:
+gronk reads the following YAML [frontmatter](https://jekyllrb.com/docs/front-matter/) variables for metadata:
 
 | variable         | description                                                                           |
 |------------------|---------------------------------------------------------------------------------------|
@@ -97,10 +91,10 @@ these notes are probably wrong
 ## CLI Usage
 
 ```
-$ notes2web.py notes_directory
+$ gronk.py notes_directory
 ```
 
-Output of `notes2web.py --help`:
+Output of `gronk.py --help`:
 
 TODO add cli output
 

@@ -1,0 +1,14 @@
+beautifulsoup4==4.9.3
+editfrontmatter==0.0.1
+greenlet==2.0.2
+Jinja2==3.0.3
+MarkupSafe==2.1.0
+msgpack==1.0.5
+oyaml==1.0
+pynvim==0.4.3
+pypandoc==1.5
+python-frontmatter==1.0.0
+python-magic==0.4.24
+regex==2021.11.10
+soupsieve==2.2.1
+PyYAML==6.0.1

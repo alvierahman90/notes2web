@@ -1,5 +1,0 @@
-author: {{ author }}
-date: {{ date }}
-title: {{ title }}
-tags: {{ tags }}
-uuid: {{ uuid }}
