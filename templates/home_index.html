@@ -3,13 +3,12 @@
 <meta charset="utf-8"> 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" />
 <link rel="stylesheet" type="text/css" href="/css/styles.css" />
-<title>{{ title }}</title>
+<title>{{ post['content'] }}</title>
 </head>
 <body>
 <div id="content">
-<h1> {{ h1title }}</>
+{{ post['content']|safe }}
 <p>
-These are my personal notes. Correctness is not guaranteed.
 Browse <a href="/notes">here</a> or by tag <a href="/tags">here</a>.
 </p>
 

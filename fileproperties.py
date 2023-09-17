@@ -107,7 +107,7 @@ class FileMap:
             #print(f"FileMap._get_index_entries({filepath=}): {entry=}")
 
 
-        entries.sort(key=lambda entry: str(entry['title']).lower())
+        entries.sort(key=lambda entry: str(entry.get('title', '')).lower())
         entries.sort(key=lambda entry: entry['is_dir'], reverse=True)
 
         return entries
@@ -160,6 +160,10 @@ class FileMap:
 
 
     def to_list(self):
+        return [ val for _, val in self._map.items() ]
+
+
+    def to_search_data(self):
         """
         returns list of every file in map
         """

@@ -40,7 +40,7 @@
 
 		<p class="smallText metadata"> tags: [
 			{% for tag in tags %}
-			<a href="/.tags/{{ tag }}.html">{{ tag }}</a>{% if loop.nextitem %},{% endif %}
+			<a href="/tags/{{ tag }}">{{ tag }}</a>{% if loop.nextitem %},{% endif %}
 			{% endfor %}
 		]</p>
 		<p class="smallText metadata">

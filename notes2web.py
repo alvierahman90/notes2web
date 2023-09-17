@@ -21,7 +21,7 @@ import requests
 from fileproperties import FileMap
 
 
-N2W_COMMIT = ""
+N2W_COMMIT = "dev"
 
 PANDOC_SERVER_URL = os.getenv("PANDOC_SERVER_URL", r"http://localhost:3030/")
 PANDOC_TIMEOUT = int(os.getenv("PANDOC_TIMEOUT", "120"))
@@ -38,7 +38,7 @@ JINJA_ENV = jinja2.Environment(
 JINJA_TEMPLATES = {}
 JINJA_TEMPLATE_TEXTARTICLE = JINJA_ENV.get_template("textarticle.html")
 JINJA_TEMPLATE_HOME_INDEX = JINJA_ENV.get_template("home_index.html")
-JINJA_TEMPLATE_DIRECTORY_INDEX = JINJA_ENV.get_template("index.html")
+JINJA_TEMPLATE_INDEX = JINJA_ENV.get_template("index.html")
 JINJA_TEMPLATE_ARTICLE = JINJA_ENV.get_template("article.html")
 
 
@@ -172,43 +172,71 @@ def render_markdown(content):
 
 
 
-def process_home_index(output_dir, search_data, notes_git_head_sha1=None):
+def process_home_index(args, notes_git_head_sha1=None):
     """
     create home index.html in output_dir
     """
+
+    post = {
+            'title': 'gronk',
+            'content': ''
+            }
+    custom_content_file = args.notes.joinpath('index.md')
+    print(f'{custom_content_file=}')
+    if custom_content_file.is_file():
+        fmpost = frontmatter.loads(custom_content_file.read_text()).to_dict()
+        for key, val in fmpost.items():
+            post[key] = val
+
+    post['content'] = render_markdown(post['content'])
+
     html = JINJA_TEMPLATE_HOME_INDEX.render(
             n2w_commit = N2W_COMMIT,
-            search_data=search_data,
-            notes_git_head_sha1=notes_git_head_sha1,
+            search_data = FILEMAP.to_search_data(),
+            notes_git_head_sha1 = notes_git_head_sha1,
+            post=post
             )
-    with open(output_dir.joinpath('index.html'), 'w+', encoding='utf-8') as file_pointer:
-        file_pointer.write(html)
+
+    args.output_dir.joinpath('index.html').write_text(html)
 
 
-def generate_variable_browser(output_dir, posts, variable_name) :
+def generate_tag_browser(output_dir) :
     """
     generate a directory that lets you groub by and browse by any given tag. e.g. tags, authors
     """
-    groups = {}
+    tags = {}
 
-    for key, post in posts.iter():
-        group_val = post.get(variable_name, None)
-        if group_val is None:
+    for post in FILEMAP.to_list():
+        post['path'] = post['dst_path']['web']
+
+        if 'tags' not in post.keys():
             continue
 
-        if group_val not in groups.keys():
-            groups[group_val] = []
+        for tag in post['tags']:
+            if tag not in tags.keys():
+                tags[tag] = []
 
-        groups[group_val].append(post)
+            tags[tag].append(post)
 
-    for group_val, index_entries in groups.iter():
-        post = {
-                'index_entries': index_entries,
-                'title': group_val,
-                }
 
-    # TODO finish writing function, write page to disk
+    for tag, index_entries in tags.items():
+        output_file = output_dir.joinpath(tag, 'index.html')
+        output_file.parent.mkdir(exist_ok=True, parents=True)
+        output_file.write_text(JINJA_TEMPLATE_INDEX.render(
+                automatic_index=True,
+                search_bar=True,
+                title=tag,
+                index_entries = index_entries
+                ))
 
+    output_file = output_dir.joinpath('index.html')
+    output_file.parent.mkdir(exist_ok=True, parents=True)
+    output_file.write_text(JINJA_TEMPLATE_INDEX.render(
+            automatic_index=True,
+            search_bar=True,
+            title='tags',
+            index_entries = [{ 'path': tag, 'title': tag, 'is_dir': False, } for tag in tags.keys()]
+            ))
 
 
 def main(args):
@@ -244,9 +272,8 @@ def main(args):
         root_properties = FILEMAP.get(root)
         root_properties['dst_path']['raw'].mkdir(parents=True, exist_ok=True)
 
-        pprint.pprint(root_properties)
-        print(JINJA_TEMPLATE_DIRECTORY_INDEX)
-        html = JINJA_TEMPLATE_DIRECTORY_INDEX.render(**root_properties)
+        #pprint.pprint(root_properties)
+        html = JINJA_TEMPLATE_INDEX.render(**root_properties)
         with open(root_properties['dst_path']['raw'].joinpath('index.html'), 'w+', encoding='utf-8') as file_pointer:
             file_pointer.write(html)
 
@@ -254,20 +281,18 @@ def main(args):
         for file in files:
             render_file(root.joinpath(file))
 
-
-    process_home_index(args.output_dir, search_data=FILEMAP.to_list())
+    process_home_index(args)
 
     # copy styling and js scripts necessary for function
     shutil.copytree(CSS_DIR, args.output_dir.joinpath('css'), dirs_exist_ok=True)
     shutil.copytree(JS_DIR, args.output_dir.joinpath('js'), dirs_exist_ok=True)
 
-
+    generate_tag_browser(args.output_dir.joinpath('tags'))
 
     return 0
 
 
 # TODO implement useful logging and debug printing
-# TODO build tag/metadata pages
 
 if __name__ == '__main__':
     try:

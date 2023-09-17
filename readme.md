@@ -81,6 +81,19 @@ a file called `styles.css`.
 To add additional styling, the default styling will attempt to import `styles.css` from the root of the notes
 directory.
 
+To add additional content to the homepage, create a file called `index.md` at the top level of your notes directory.
+To set the HTML `title` tag, set `title` in the frontmatter of `index.md`:
+
+```markdown
+---
+title: "alv's notes"
+---
+
+# alv's notes
+
+these notes are probably wrong
+```
+
 ## CLI Usage
 
 ```
