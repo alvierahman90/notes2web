@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-import editfrontmatter
-import frontmatter
+
 import pathlib
 import sys
 import uuid
+
+
+import editfrontmatter
+import frontmatter
 
 def get_args():
     """ Get command line arguments """
@@ -19,13 +22,13 @@ def get_args():
 
 def main(args):
     """ Entry point for script """
-        template_str= [
-            "author: {{ author }}"
-            "date: {{ date }}"
-            "title: {{ title }}"
-            "tags: {{ tags }}"
-            "uuid: {{ uuid }}"
-            ].join("\n")
+    template_str= "\n".join([
+        "author: {{ author }}"
+        "date: {{ date }}"
+        "title: {{ title }}"
+        "tags: {{ tags }}"
+        "uuid: {{ uuid }}"
+        ])
 
     with open(args.filename) as fp:
         fm_pre = frontmatter.load(fp)
