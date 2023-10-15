@@ -22,13 +22,7 @@ doing it for me:
 
 ## Install
 
-0. Install [Pandoc](https://pandoc.org/index.html) and [Pip](https://github.com/pypa/pip)
-
-   On arch:
-   ```
-   # pacman -S pandoc python-pip
-   ```
-
+0. Install [Pandoc](https://pandoc.org/index.html) and [Pip](https://github.com/pypa/pip), python3-dev, and a C compiler
 1. Run `make install` as root
 
 ## Things to Remember Whilst Writing Notes
