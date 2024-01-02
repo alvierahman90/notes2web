@@ -23,6 +23,9 @@ RUN apt-get update \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN useradd -Ms /bin/nologin user
+USER user
+
 COPY . .
 
 CMD [ "python3", "-u", "gronk.py", "--output-dir", "./web", "./notes" ]
