@@ -70,7 +70,7 @@ Combine it with `find` to UUIDify all your markdown files (but make a backup fir
 
 ## Custom Styling
 
-To completely replace the existing styling, set the environment variable `CSS_DIR` to another directory with
+To completely replace the existing styling, set the environment variable `GRONK_CSS_DIR` to another directory with
 a file called `styles.css`.
 
 To add additional styling, the default styling will attempt to import `styles.css` from the root of the notes

@@ -24,9 +24,9 @@ GRONK_COMMIT = "dev"
 
 PANDOC_SERVER_URL = os.getenv("PANDOC_SERVER_URL", r"http://localhost:3030/")
 PANDOC_TIMEOUT = int(os.getenv("PANDOC_TIMEOUT", "120"))
-CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/gronk/css"))
-JS_DIR = Path(os.getenv("JS_DIR", "/opt/gronk/js"))
-TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/gronk/templates"))
+GRONK_CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/gronk/css"))
+GRONK_JS_DIR = Path(os.getenv("JS_DIR", "/opt/gronk/js"))
+GRONK_TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/gronk/templates"))
 
 JINJA_ENV = jinja2.Environment(loader=jinja2.PackageLoader("gronk"),
                                autoescape=jinja2.select_autoescape)
@@ -464,8 +464,12 @@ def main(args):
     process_home_index(args)
 
     # copy styling and js scripts necessary for function
-    shutil.copytree(CSS_DIR, args.output_dir.joinpath('css'), dirs_exist_ok=True)
-    shutil.copytree(JS_DIR, args.output_dir.joinpath('js'), dirs_exist_ok=True)
+    shutil.copytree(GRONK_CSS_DIR,
+                    args.output_dir.joinpath('css'),
+                    dirs_exist_ok=True)
+    shutil.copytree(GRONK_JS_DIR,
+                    args.output_dir.joinpath('js'),
+                    dirs_exist_ok=True)
 
     generate_tag_browser(args.output_dir.joinpath('tags'))
 
