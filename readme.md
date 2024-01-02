@@ -19,8 +19,30 @@ Tested with [pandoc v2.19.2](https://github.com/jgm/pandoc/releases/tag/2.19.2).
 
 ## Install
 
+### Docker
+
+Run the following, modifing the `-v` arguments as needed to mount the correct folders and
+setting the value of `ARCH` to either `amd64` or `arm64` as appropriate.
+
+```
+docker build . -t gronk --build-arg ARCH=amd64 
+docker run -v ./n:/usr/src/app/notes -v ./web:/usr/src/app/web gronk
+```
+
+#### Compose
+
+A [docker compose file](./docker-compose.yml) file has been provided.
+
+Set the following environment variables (or create a .env file) and run `docker compose up`:
+
+- `ARCH`
+- `SOURCE`
+- `OUTPUT`
+
+### Locally
+
 0. Install [Pandoc](https://pandoc.org/index.html) and [Pip](https://github.com/pypa/pip), python3-dev, and a C compiler
-1. Run `make install` as root
+1. `sudo make install`
 
 ## Other Things to Know
 
@@ -98,7 +120,18 @@ $ gronk.py notes_directory
 
 Output of `gronk.py --help`:
 
-TODO add cli output
+```
+usage: gronk.py [-h] [-o OUTPUT_DIR] [-F] notes
+
+positional arguments:
+  notes
+
+options:
+  -h, --help            show this help message and exit
+  -o OUTPUT_DIR, --output-dir OUTPUT_DIR
+  -F, --force           Generate new output html even if source file was modified before output
+                        html
+```
 
 The command will generate a website in the `output-dir` directory (`./web` by default).
 It will then generate a list of all note files and put it in `index.html`.

@@ -28,8 +28,6 @@ GRONK_JS_DIR = Path(os.getenv("GRONK_JS_DIR", "/opt/gronk/js"))
 GRONK_TEMPLATES_DIR = Path(
     os.getenv("GRONK_TEMPLATES_DIR", "/opt/gronk/templates/"))
 
-print(f"{GRONK_TEMPLATES_DIR=}")
-
 JINJA_ENV = jinja2.Environment(
     loader=jinja2.FileSystemLoader(searchpath=GRONK_TEMPLATES_DIR),
     autoescape=jinja2.select_autoescape)

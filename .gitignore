@@ -1,6 +1,7 @@
 *.swp
+.env
 env
 n
 web
 planning.txt
-__pycache__
+**/__pycache__

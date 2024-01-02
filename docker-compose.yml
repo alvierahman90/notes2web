@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  gronk:
+    build:
+      context: '.'
+      args:
+        ARCH: ${ARCH}
+    volumes:
+      - '${SOURCE}:/usr/src/app/notes'
+      - '${OUTPUT}:/usr/src/app/web'
