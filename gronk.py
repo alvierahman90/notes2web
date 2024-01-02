@@ -256,17 +256,23 @@ def render_markdown_file(input_filepath):
     write markdown file to args.output_dir in html,
     return list of tuple of output filepath, frontmatter post
     """
-    print(f"render_markdown_file({input_filepath})")
     with open(input_filepath, encoding='utf-8') as file_pointer:
         content = frontmatter.load(file_pointer).content
 
     properties = FILEMAP.get(input_filepath)
 
-    # TODO pandoc no longer handles template due to metadata passing issues, use jinja to fill in the metadata
     html = render_markdown(content)
+    html = JINJA_TEMPLATE_ARTICLE.render(
+        license=LICENSE,
+        content=html,
+        lecture_slides=properties.get("lecture_slides"),
+        lecture_notes=properties.get("lecture_notes"),
+        uuid=properties.get("uuid"),
+        tags=properties.get("tags"),
+        author=properties.get("author"),
+        title=properties.get("title"))
 
-    with open(properties['dst_path']['html'], 'w+', encoding='utf-8') as file_pointer:
-        file_pointer.write(html)
+    properties['dst_path']['html'].write_text(html)
 
 
 def render_plaintext_file(input_filepath):
