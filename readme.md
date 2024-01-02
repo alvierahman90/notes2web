@@ -53,7 +53,7 @@ Set the following environment variables (or create a .env file) and run `docker 
 
 ## Custom Directory Index and Metadata
 
-To add custom content to a directory index, put it in a file called `index.md` under the directory.
+To add custom content to a directory index, put it in a file called `readme.md` under the directory.
 
 You can set the following frontmatter variables to customise the directory index of a directory:
 
@@ -61,7 +61,7 @@ You can set the following frontmatter variables to customise the directory index
 |------------------------|-------------------|--------------------------------------------------------------------------------------------|
 | `tags`                 | `[]`              | list of tags, used by search and inherited by any notes and subdirectories                 |
 | `uuid`                 | none              | unique id to reference directory, used for permalinking                                    |
-| `content_after_search` | `false`           | show custom content in `index.md` after search bar and directory index                     |
+| `content_after_search` | `false`           | show custom content in `readme.md` after search bar and directory index                     |
 | `automatic_index`      | `true`            | show the automatically generated directory index. required for search bar to function.     |
 | `search_bar`           | `true`            | show search bar to search directory items. requires `automatic_index` (enabled by default) |
 
@@ -99,8 +99,8 @@ a file called `styles.css`.
 To add additional styling, the default styling will attempt to import `styles.css` from the root of the notes
 directory.
 
-To add additional content to the homepage, create a file called `index.md` at the top level of your notes directory.
-To set the HTML `title` tag, set `title` in the frontmatter of `index.md`:
+To add additional content to the homepage, create a file called `readme.md` at the top level of your notes directory.
+To set the HTML `title` tag, set `title` in the frontmatter of `readme.md`:
 
 ```markdown
 ---

@@ -118,8 +118,8 @@ class FileMap:
             'tags': [],
         }
 
-        if 'index.md' in [f.name for f in filepath.iterdir()]:
-            with open(filepath.joinpath('index.md'),
+        if 'readme.md' in [f.name for f in filepath.iterdir()]:
+            with open(filepath.joinpath('readme.md'),
                       encoding='utf-8') as file_pointer:
                 for key, val in frontmatter.load(
                         file_pointer).to_dict().items():
@@ -358,7 +358,7 @@ def process_home_index(args, notes_git_head_sha1=None):
     """
 
     post = {'title': 'gronk', 'content': ''}
-    custom_content_file = args.notes.joinpath('index.md')
+    custom_content_file = args.notes.joinpath('readme.md')
     if custom_content_file.is_file():
         fmpost = frontmatter.loads(custom_content_file.read_text()).to_dict()
         for key, val in fmpost.items():
@@ -487,8 +487,8 @@ def main(args):
 
         # render each file
         for file in files:
-            # don't render index.md as index as it is used for directory
-            if file == "index.md":
+            # don't render readme.md as index as it is used for directory
+            if file == "readme.md":
                 continue
             render_file(root.joinpath(file))
 
