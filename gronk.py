@@ -505,7 +505,14 @@ def main(args):
 # TODO implement useful logging and debug printing
 
 if __name__ == '__main__':
+    pandoc_process = subprocess.Popen(["/usr/bin/pandoc-server"],
+                                      stdout=subprocess.PIPE)
+    time.sleep(1)
+    print(pandoc_process.stdout)
+
     try:
         sys.exit(main(get_args()))
     except KeyboardInterrupt:
         sys.exit(0)
+    finally:
+        pandoc_process.kill()
