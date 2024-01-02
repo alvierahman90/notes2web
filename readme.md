@@ -25,27 +25,43 @@ doing it for me:
 0. Install [Pandoc](https://pandoc.org/index.html) and [Pip](https://github.com/pypa/pip), python3-dev, and a C compiler
 1. Run `make install` as root
 
-## Things to Remember Whilst Writing Notes
+## Other Things to Know
 
-- notes2web reads the following YAML [frontmatter](https://jekyllrb.com/docs/front-matter/) variable:
-
-  - `author` --- The person(s) who wrote the article
-  - `tags` --- A YAML list of tags which the article relates to - this is used for browsing and also
-               searching
-  - `title` --- The title of the article
-  - `uuid` --- A unique identifier used for permalinks. More below.
-  - `lecture_slides` --- a list of paths pointing to lecture slides used while taking notes
-  - `lecture_notes` --- a list of paths pointing to other notes used while taking notes
-        
 - notes2web indexes [ATX-style headings](https://pandoc.org/MANUAL.html#atx-style-headings) for
   searching
 - notes2web attempts to display file history through the `git log` command
 - notes2web looks for the plaintext file `LICENSE` in the root directory of your notes
 
-  This is optional but if you would like to add a license you can find one
-  [here](https://choosealicense.com).
 
-### Permalinks
+## Custom Directory Index
+
+To add custom content to a directory index, put it in a file called `index.md` under the directory.
+
+You can set the following frontmatter variables to customise the directory index of a directory:
+
+| variable               | default value     | description                                                                                |
+|------------------------|-------------------|--------------------------------------------------------------------------------------------|
+| `tags`                 | `[]`              | list of tags, used by search and inherited by any notes and subdirectories                 |
+| `uuid`                 | none              | unique id to reference directory, used for permalinking                                    |
+| `content_after_search` | `false`           | show custom content in `index.md` after search bar and directory index                     |
+| `automatic_index`      | `true`            | show the automatically generated directory index. required for search bar to function.     |
+| `search_bar`           | `true`            | show search bar to search directory items. requires `automatic_index` (enabled by default) |
+
+
+## Notes Metadata
+
+notes2web reads the following YAML [frontmatter](https://jekyllrb.com/docs/front-matter/) variables for metadata:
+
+| variable         | description                                                                           |
+|------------------|---------------------------------------------------------------------------------------|
+| `author`         | The person(s) who wrote the article                                                   |
+| `tags`           | A YAML list of tags which the article relates to - this is used for browsing and also |
+| `title`          | The title of the article                                                              |
+| `uuid`           | A unique identifier used for permalinks.                                              |
+| `lecture_slides` | a list of paths pointing to lecture slides used while taking notes                    |
+| `lecture_notes`  | a list of paths pointing to other notes used while taking notes                       |
+
+## Permalinks
 
 Permalinks are currently rather basic and requires JavaScript to be enabled on the local computer.
 In order to identify documents between file changes, a unique identifier is used to identify a file.
@@ -57,21 +73,13 @@ The included `n2w_add_uuid.py` will add a UUID to a markdown file which does not
 already.
 Combine it with `find` to UUIDify all your markdown files (but make a backup first).
 
-### Inherited Properties
+## Custom Styling
 
-Notes can inherit a some properties from their parent folder(s) by creating a `.n2w.yml` file in a
-folder.
+To completely replace the existing styling, set the environment variable `CSS_DIR` to another directory with
+a file called `styles.css`.
 
-#### Tags
-
-If you have a folder `uni` with all you university notes, you might want all the files in there to
-be tagged `uni`:
-
-`NOTES_PATH/uni/.n2w.yaml`:
-
-```yaml
-itags: [ university ]
-```
+To add additional styling, the default styling will attempt to import `styles.css` from the root of the notes
+directory.
 
 ## CLI Usage
 
@@ -81,35 +89,7 @@ $ notes2web.py notes_directory
 
 Output of `notes2web.py --help`:
 
-```
-usage: notes2web.py [-h] [-o OUTPUT_DIR] [-t TEMPLATE] [-H TEMPLATE_TEXT_HEAD]
-                    [-f TEMPLATE_TEXT_FOOT] [-i TEMPLATE_INDEX_HEAD]
-                    [-I TEMPLATE_INDEX_FOOT] [-s STYLESHEET]
-                    [--home_index HOME_INDEX] [-e EXTRA_INDEX_CONTENT]
-                    [-n INDEX_ARTICLE_NAMES] [-F] [--fuse FUSE]
-                    [--searchjs SEARCHJS]
-                    notes
-
-positional arguments:
-  notes
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -o OUTPUT_DIR, --output-dir OUTPUT_DIR
-  -t TEMPLATE, --template TEMPLATE
-  -H TEMPLATE_TEXT_HEAD, --template-text-head TEMPLATE_TEXT_HEAD
-  -f TEMPLATE_TEXT_FOOT, --template-text-foot TEMPLATE_TEXT_FOOT
-  -i TEMPLATE_INDEX_HEAD, --template-index-head TEMPLATE_INDEX_HEAD
-  -I TEMPLATE_INDEX_FOOT, --template-index-foot TEMPLATE_INDEX_FOOT
-  -s STYLESHEET, --stylesheet STYLESHEET
-  --home_index HOME_INDEX
-  -e EXTRA_INDEX_CONTENT, --extra-index-content EXTRA_INDEX_CONTENT
-  -n INDEX_ARTICLE_NAMES, --index-article-names INDEX_ARTICLE_NAMES
-  -F, --force           Generate new output html even if source file was
-                        modified before output html
-  --fuse FUSE
-  --searchjs SEARCHJS
-```
+TODO add cli output
 
 The command will generate a website in the `output-dir` directory (`./web` by default).
 It will then generate a list of all note files and put it in `index.html`.

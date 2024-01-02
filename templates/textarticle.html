@@ -1,0 +1,9 @@
+{% extends "article.html" %}
+{% block body %}
+<p> This file was not rendered by notes2web because it is a plaintext file, not a markdown
+file.
+You access the raw file <a href="{{ raw_link }}">here</a>.
+Below is an unformatted representation of the file:
+</p>
+<pre>{{ raw_content }}</pre>
+{% endblock %}

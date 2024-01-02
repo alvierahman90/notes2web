@@ -1,3 +1,13 @@
+/*
+ * search.js expects an array `data` containing objects with the following keys:
+ * headers: [string]
+ * path: string
+ * tags: [string]
+ * title: string
+ * uuid: string
+ */
+
+
 const HEADERS = "headers"
 const PATH = "path"
 const TAGS = "tags"
@@ -6,11 +16,11 @@ const TITLE = "title"
 const SEARCH_TIMEOUT_MS = 100
 var SEARCH_TIMEOUT_ID = -1
 
-const fuse = new Fuse(data, {
+const fuse = new Fuse(search_data, {
   keys: [
     {
       name: HEADERS,
-      weight: 0.2
+      weight: 1
     },
     {
       name: PATH,
@@ -18,11 +28,11 @@ const fuse = new Fuse(data, {
     },
     {
       name: TAGS,
-      weight: 0.1
+      weight: 0.5
     },
     {
       name: TITLE,
-      weight: 4
+      weight: 2
     }
   ],
   includeMatches: true,

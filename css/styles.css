@@ -3,6 +3,7 @@
 @import url("https://styles.alv.cx/modules/search.css");
 @import url("https://styles.alv.cx/modules/buttonlist.css");
 @import url("https://styles.alv.cx/modules/darkmode.css");
+@import url("/notes/styles.css");
 
 html {
   scroll-behavior: smooth;
