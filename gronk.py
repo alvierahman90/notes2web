@@ -28,18 +28,15 @@ CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/gronk/css"))
 JS_DIR = Path(os.getenv("JS_DIR", "/opt/gronk/js"))
 TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/gronk/templates"))
 
-
-JINJA_ENV = jinja2.Environment(
-        loader=jinja2.PackageLoader("gronk", str(TEMPLATES_DIR)),
-        autoescape=jinja2.select_autoescape
-        )
+JINJA_ENV = jinja2.Environment(loader=jinja2.PackageLoader("gronk"),
+                               autoescape=jinja2.select_autoescape)
 
 JINJA_TEMPLATES = {}
-JINJA_TEMPLATE_TEXTARTICLE = JINJA_ENV.get_template("textarticle.html")
-JINJA_TEMPLATE_HOME_INDEX = JINJA_ENV.get_template("home_index.html")
+JINJA_TEMPLATE_TEXTARTICLE = JINJA_ENV.get_template("article-text.html")
+JINJA_TEMPLATE_HOME_INDEX = JINJA_ENV.get_template("home.html")
 JINJA_TEMPLATE_INDEX = JINJA_ENV.get_template("index.html")
 JINJA_TEMPLATE_ARTICLE = JINJA_ENV.get_template("article.html")
-
+JINJA_TEMPLATE_PERMALINK = JINJA_ENV.get_template("permalink.html")
 
 LICENSE = None
 GIT_REPO = None

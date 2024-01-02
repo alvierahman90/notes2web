@@ -1,0 +1,18 @@
+{% extends "article.html" %}
+{% block content %}
+{{ post['content']|safe }}
+<p>
+Browse <a href="/notes">here</a> or by tag <a href="/tags">here</a>.
+</p>
+
+<div id="searchWrapper">
+<input autocomplete="off" placeholder="search" id="search" autofocus>
+</div>
+<p class="smallText" style="margin-top: 0; text-align: center;"> Press <kbd>Enter</kbd> to open first result or <kbd>Shift</kbd>+<kbd>Enter</kbd> to open in new tab</p>
+<div id="results">
+</div>
+
+<script src="/js/fuse.js"> </script>
+<script> const search_data = {{ search_data|tojson }} </script>
+<script src="/js/search.js"> </script>
+{% endblock %}
