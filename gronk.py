@@ -23,14 +23,17 @@ GRONK_COMMIT = "dev"
 
 PANDOC_SERVER_URL = os.getenv("PANDOC_SERVER_URL", r"http://localhost:3030/")
 PANDOC_TIMEOUT = int(os.getenv("PANDOC_TIMEOUT", "120"))
-GRONK_CSS_DIR = Path(os.getenv("CSS_DIR", "/opt/gronk/css"))
-GRONK_JS_DIR = Path(os.getenv("JS_DIR", "/opt/gronk/js"))
-GRONK_TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR", "/opt/gronk/templates"))
+GRONK_CSS_DIR = Path(os.getenv("GRONK_CSS_DIR", "/opt/gronk/css"))
+GRONK_JS_DIR = Path(os.getenv("GRONK_JS_DIR", "/opt/gronk/js"))
+GRONK_TEMPLATES_DIR = Path(
+    os.getenv("GRONK_TEMPLATES_DIR", "/opt/gronk/templates/"))
 
-JINJA_ENV = jinja2.Environment(loader=jinja2.PackageLoader("gronk"),
-                               autoescape=jinja2.select_autoescape)
+print(f"{GRONK_TEMPLATES_DIR=}")
 
-JINJA_TEMPLATES = {}
+JINJA_ENV = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(searchpath=GRONK_TEMPLATES_DIR),
+    autoescape=jinja2.select_autoescape)
+
 JINJA_TEMPLATE_TEXTARTICLE = JINJA_ENV.get_template("article-text.html")
 JINJA_TEMPLATE_HOME_INDEX = JINJA_ENV.get_template("home.html")
 JINJA_TEMPLATE_INDEX = JINJA_ENV.get_template("index.html")
