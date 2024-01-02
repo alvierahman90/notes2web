@@ -1,3 +1,5 @@
+> notes2web is now called [gronk](https://github.com/alvierahman90/gronk) and development has moved
+
 # notes2web
 
 View your notes as a static html site. Browse a live sample of it [here](https://notes.alv.cx).
