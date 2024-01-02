@@ -138,6 +138,9 @@ class FileMap:
         entries = []
 
         for path in filepath.iterdir():
+            if '.git' in path.parts:
+                continue
+
             if path.is_dir():
                 entry = self._get_directory_properties(
                     path, include_index_entries=False)
