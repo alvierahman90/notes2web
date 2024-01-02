@@ -371,7 +371,19 @@ def process_home_index(args, notes_git_head_sha1=None):
     args.output_dir.joinpath('index.html').write_text(html)
 
 
-def generate_tag_browser(output_dir) :
+def generate_permalink_page(output_dir):
+    """
+    create the directory and index.html for redirecting permalinks
+    """
+
+    dir = output_dir.joinpath('permalink')
+    dir.mkdir(exist_ok=True)
+    dir.joinpath('index.html').write_text(
+        JINJA_TEMPLATE_PERMALINK.render(gronk_commit=GRONK_COMMIT,
+                                        data=FILEMAP.get_uuid_map()))
+
+
+def generate_tag_browser(output_dir):
     """
     generate a directory that lets you groub by and browse by any given tag. e.g. tags, authors
     """
@@ -470,6 +482,7 @@ def main(args):
                     dirs_exist_ok=True)
 
     generate_tag_browser(args.output_dir.joinpath('tags'))
+    generate_permalink_page(args.output_dir)
 
     return 0
 
