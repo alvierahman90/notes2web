@@ -10,8 +10,9 @@ Tested with [pandoc v2.19.2](https://github.com/jgm/pandoc/releases/tag/2.19.2).
 ## Why?
 
 - View notes as a website, on any device
-- Write notes with Pandoc markdown
 - Easily share notes
+- Powered by Pandoc, and therefore supports [Pandoc's markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) (I mainly care about equations)
+- [flatnotes](https://github.com/Dullage/flatnotes) is cool but I really would rather type my notes in Vim
 - Lightweight HTML generated
 - Minimal JavaScript
 
@@ -28,7 +29,7 @@ Tested with [pandoc v2.19.2](https://github.com/jgm/pandoc/releases/tag/2.19.2).
 - gronk looks for the plaintext file `LICENSE` in the root directory of your notes
 
 
-## Custom Directory Index
+## Custom Directory Index and Metadata
 
 To add custom content to a directory index, put it in a file called `index.md` under the directory.
 
@@ -115,5 +116,3 @@ Then you just have to point a webserver at `output-dir`.
 Default synatx highlighting is based off [Pygments](https://pygments.org/)' default theme and
 made using Pandoc v2.7.2.
 I found the theme [here](https://github.com/tajmone/pandoc-goodies/blob/master/skylighting/css/built-in-styles/pygments.css).
-
-Pretty sure the link colours are taken from [thebestmotherfucking.website](https://thebestmotherfucking.website/).
