@@ -462,13 +462,28 @@ def main(args):
         root_properties = FILEMAP.get(root)
         root_properties['dst_path']['raw'].mkdir(parents=True, exist_ok=True)
 
-        #pprint.pprint(root_properties)
-        html = JINJA_TEMPLATE_INDEX.render(**root_properties)
-        with open(root_properties['dst_path']['raw'].joinpath('index.html'), 'w+', encoding='utf-8') as file_pointer:
-            file_pointer.write(html)
+        pprint.pprint(root_properties)
+        html = JINJA_TEMPLATE_INDEX.render(
+            gronk_commit=GRONK_COMMIT,
+            title=root_properties.get('title', ''),
+            content=root_properties.get('content', ''),
+            content_after_search=root_properties['content_after_search'],
+            automatic_index=root_properties['automatic_index'],
+            search_bar=root_properties['search_bar'],
+            index_entries=[{
+                'title': entry.get('title', ''),
+                'is_dir': entry.get('is_dir', False),
+                'path': str(entry.get('path', Path(''))),
+            } for entry in root_properties.get('index_entries', '')],
+        )
+        root_properties['dst_path']['raw'].joinpath('index.html').write_text(
+            html)
 
         # render each file
         for file in files:
+            # don't render index.md as index as it is used for directory
+            if file == "index.md":
+                continue
             render_file(root.joinpath(file))
 
     process_home_index(args)
