@@ -527,6 +527,11 @@ def start_pandoc_server():
             break
         except requests.ConnectionError:
             time.sleep(0.1)
+            rc = process.poll()
+            if rc is not None:
+                print(f"PANDOC SERVER FAILED TO START: {rc=}")
+                print(process.stdout.read().decode("utf-8"))
+                raise Exception("Pandoc server failed to start")
 
     elapsed_time = time.time() - start_time
     print(f"pandoc-server started {version=} {elapsed_time=}")
