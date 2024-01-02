@@ -16,7 +16,6 @@ import regex as re
 import pprint
 
 import frontmatter
-import git
 import jinja2
 import requests
 
@@ -39,7 +38,6 @@ JINJA_TEMPLATE_ARTICLE = JINJA_ENV.get_template("article.html")
 JINJA_TEMPLATE_PERMALINK = JINJA_ENV.get_template("permalink.html")
 
 LICENSE = None
-GIT_REPO = None
 FILEMAP = None
 
 
@@ -232,8 +230,8 @@ def update_required(src_filepath, output_filepath):
     check if file requires an update,
     return boolean
     """
-    return not output_filepath.exists() or src_filepath.stat().st_mtime > output_filepath.stat().st_mtimeme()
-
+    return not output_filepath.exists() or src_filepath.stat(
+    ).st_mtime > output_filepath.stat().st_mtimeme()
 
 
 def get_args():
@@ -242,8 +240,13 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('notes', type=Path)
     parser.add_argument('-o', '--output-dir', type=Path, default='web')
-    parser.add_argument('-F', '--force', action="store_true",
-                help="Generate new output html even if source file was modified before output html")
+    parser.add_argument(
+        '-F',
+        '--force',
+        action="store_true",
+        help=
+        "Generate new output html even if source file was modified before output html"
+    )
     return parser.parse_args()
 
 
@@ -273,18 +276,11 @@ def render_plaintext_file(input_filepath):
     return list of tuple of output filepath, empty dict
     """
 
-    with open(input_filepath, encoding='utf-8') as file_pointer:
-        raw_content = file_pointer.read()
-
+    raw_content = input_filepath.read_text()
     properties = FILEMAP.get(input_filepath)
-
-    html = JINJA_TEMPLATE_TEXTARTICLE.render(license = LICENSE, **properties)
-
-    with open(properties['dst_path']['raw'], "w+", encoding='utf-8') as file_pointer:
-        file_pointer.write(raw_content)
-
-    with open(properties['dst_path']['html'], "w+", encoding='utf-8') as file_pointer:
-        file_pointer.write(html)
+    html = JINJA_TEMPLATE_TEXTARTICLE.render(license=LICENSE, **properties)
+    properties['dst_path']['raw'].write_text(raw_content)
+    properties['dst_path']['html'].write_text(html)
 
 
 def render_generic_file(input_filepath):
@@ -320,30 +316,25 @@ def render_markdown(content):
     """
 
     post_body = {
-            'text': content,
-            'toc-depth': 6,
-            'highlight-style': 'pygments',
-            'html-math-method': 'mathml',
-            'to': 'html',
-            'files': {
-                'data/data/abbreviations': '',
-                },
-            'standalone': False,
-            }
+        'text': content,
+        'toc-depth': 6,
+        'highlight-style': 'pygments',
+        'html-math-method': 'mathml',
+        'to': 'html',
+        'files': {
+            'data/data/abbreviations': '',
+        },
+        'standalone': False,
+    }
 
-    headers = {
-            'Accept': 'application/json'
-            }
+    headers = {'Accept': 'application/json'}
 
-    response = requests.post(
-            PANDOC_SERVER_URL,
-            headers=headers,
-            json=post_body,
-            timeout=PANDOC_TIMEOUT
-            )
+    response = requests.post(PANDOC_SERVER_URL,
+                             headers=headers,
+                             json=post_body,
+                             timeout=PANDOC_TIMEOUT)
 
     response = response.json()
-
 
     # TODO look at response['messages'] and log them maybe?
     # https://github.com/jgm/pandoc/blob/main/doc/pandoc-server.md#response
@@ -351,18 +342,13 @@ def render_markdown(content):
     return response['output']
 
 
-
 def process_home_index(args, notes_git_head_sha1=None):
     """
     create home index.html in output_dir
     """
 
-    post = {
-            'title': 'gronk',
-            'content': ''
-            }
+    post = {'title': 'gronk', 'content': ''}
     custom_content_file = args.notes.joinpath('index.md')
-    print(f'{custom_content_file=}')
     if custom_content_file.is_file():
         fmpost = frontmatter.loads(custom_content_file.read_text()).to_dict()
         for key, val in fmpost.items():
@@ -371,11 +357,10 @@ def process_home_index(args, notes_git_head_sha1=None):
     post['content'] = render_markdown(post['content'])
 
     html = JINJA_TEMPLATE_HOME_INDEX.render(
-            gronk_commit = GRONK_COMMIT,
-            search_data = FILEMAP.to_search_data(),
-            notes_git_head_sha1 = notes_git_head_sha1,
-            post=post
-            )
+        gronk_commit=GRONK_COMMIT,
+        search_data=FILEMAP.to_search_data(),
+        notes_git_head_sha1=notes_git_head_sha1,
+        post=post)
 
     args.output_dir.joinpath('index.html').write_text(html)
 
@@ -398,35 +383,46 @@ def generate_tag_browser(output_dir) :
 
             tags[tag].append(post)
 
-
     for tag, index_entries in tags.items():
         output_file = output_dir.joinpath(tag, 'index.html')
         output_file.parent.mkdir(exist_ok=True, parents=True)
-        output_file.write_text(JINJA_TEMPLATE_INDEX.render(
+        output_file.write_text(
+            JINJA_TEMPLATE_INDEX.render(
+                gronk_commit=GRONK_COMMIT,
                 automatic_index=True,
                 search_bar=True,
                 title=tag,
-                index_entries = index_entries
-                ))
+                index_entries=[{
+                    'title': entry.get('title', ''),
+                    'is_dir': entry.get('is_dir', False),
+                    'path': str(entry.get('path', Path(''))),
+                } for entry in index_entries],
+            ))
 
     output_file = output_dir.joinpath('index.html')
     output_file.parent.mkdir(exist_ok=True, parents=True)
-    output_file.write_text(JINJA_TEMPLATE_INDEX.render(
-            automatic_index=True,
-            search_bar=True,
-            title='tags',
-            index_entries = [{ 'path': tag, 'title': tag, 'is_dir': False, } for tag in tags.keys()]
-            ))
+    output_file.write_text(
+        JINJA_TEMPLATE_INDEX.render(automatic_index=True,
+                                    gronk_commit=GRONK_COMMIT,
+                                    search_bar=True,
+                                    title='tags',
+                                    index_entries=[{
+                                        'path': tag,
+                                        'title': tag,
+                                        'is_dir': False,
+                                    } for tag in tags.keys()]))
 
 
 def main(args):
     """ Entry point for script """
 
     global LICENSE
-    global GIT_REPO
     global FILEMAP
 
     FILEMAP = FileMap(args.notes, args.output_dir.joinpath('notes'))
+
+    # TODO have some sort of 'site rebuild in progress - come back in a minute
+    # or two!' or auto checking/refreshing page for when site is being built
 
     if args.output_dir.is_file():
         print(f"Output directory ({args.output_dir}) cannot be a file.")
@@ -436,15 +432,11 @@ def main(args):
     # attempt to get licensing information
     license_path = args.notes.joinpath("LICENSE")
     if license_path.exists():
-        with open(license_path, encoding='utf-8') as file_pointer:
-            LICENSE = file_pointer.read()
+        LICENSE = license_path.read_text()
 
-    # create git.Repo object if notes dir is a git repo
     # TODO git commit log integration
-    if '.git' in args.notes.iterdir():
-        GIT_REPO = git.Repo(args.notes)
 
-    for root_str, subdirectories, files in os.walk(args.notes):
+    for root_str, _, files in os.walk(args.notes):
         root = Path(root_str)
         if '.git' in root.parts:
             continue
