@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-
 import pathlib
 import sys
 import uuid
 
-
 import editfrontmatter
 import frontmatter
+
 
 def get_args():
     """ Get command line arguments """
@@ -15,25 +14,28 @@ def get_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', type=pathlib.Path)
-    parser.add_argument('-w', '--write', action='store_true',
-            help='write to file instead of stdout')
+    parser.add_argument('-w',
+                        '--write',
+                        action='store_true',
+                        help='write to file instead of stdout')
     return parser.parse_args()
 
 
 def main(args):
     """ Entry point for script """
-    template_str= "\n".join([
+    template_str = "\n".join([
         "author: {{ author }}"
         "date: {{ date }}"
         "title: {{ title }}"
         "tags: {{ tags }}"
         "uuid: {{ uuid }}"
-        ])
+    ])
 
     with open(args.filename) as fp:
         fm_pre = frontmatter.load(fp)
 
-    processor = editfrontmatter.EditFrontMatter(file_path=args.filename, template_str=template_str)
+    processor = editfrontmatter.EditFrontMatter(file_path=args.filename,
+                                                template_str=template_str)
     fm_data = fm_pre.metadata
     if 'uuid' not in fm_data.keys():
         fm_data['uuid'] = str(uuid.uuid4())
