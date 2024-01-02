@@ -505,13 +505,33 @@ def main(args):
     return 0
 
 
+def start_pandoc_server():
+    """
+    attempt to get the version of pandoc server in a loop until it is
+    successful and return version as string
+    """
+    start_time = time.time()
+    process = subprocess.Popen(["/usr/bin/pandoc-server"],
+                               stdout=subprocess.PIPE)
+    version = None
+
+    while True:
+        try:
+            resp = requests.get(f"{PANDOC_SERVER_URL}/version")
+            version = resp.content.decode('utf-8')
+            break
+        except requests.ConnectionError:
+            time.sleep(0.1)
+
+    elapsed_time = time.time() - start_time
+    print(f"pandoc-server started {version=} {elapsed_time=}")
+    return process
+
+
 # TODO implement useful logging and debug printing
 
 if __name__ == '__main__':
-    pandoc_process = subprocess.Popen(["/usr/bin/pandoc-server"],
-                                      stdout=subprocess.PIPE)
-    time.sleep(1)
-    print(pandoc_process.stdout)
+    pandoc_process = start_pandoc_server()
 
     try:
         sys.exit(main(get_args()))
