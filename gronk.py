@@ -437,6 +437,8 @@ def generate_tag_browser(output_dir):
 def main(args):
     """ Entry point for script """
 
+    start_time = time.time()
+
     global LICENSE
     global FILEMAP
 
@@ -465,7 +467,7 @@ def main(args):
         root_properties = FILEMAP.get(root)
         root_properties['dst_path']['raw'].mkdir(parents=True, exist_ok=True)
 
-        pprint.pprint(root_properties)
+        #pprint.pprint(root_properties)
         html = JINJA_TEMPLATE_INDEX.render(
             gronk_commit=GRONK_COMMIT,
             title=root_properties.get('title', ''),
@@ -501,6 +503,9 @@ def main(args):
 
     generate_tag_browser(args.output_dir.joinpath('tags'))
     generate_permalink_page(args.output_dir)
+
+    elapsed_time = time.time() - start_time
+    print(f"generated notes {elapsed_time=}")
 
     return 0
 
